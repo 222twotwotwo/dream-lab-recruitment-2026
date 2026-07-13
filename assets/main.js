@@ -88,6 +88,7 @@
   const trackPanel = document.querySelector("#track-panel");
   const copyButton = document.querySelector("[data-copy-title]");
   const copyStatus = document.querySelector(".copy-status");
+  const carousel = document.querySelector("[data-carousel]");
 
   function escapeHtml(value) {
     return String(value)
@@ -179,10 +180,88 @@
     }
   }
 
+  function initCarousel(root) {
+    if (!root) return;
+
+    const slides = Array.from(root.querySelectorAll(".camp-slide"));
+    const thumbs = Array.from(root.querySelectorAll("[data-carousel-thumb]"));
+    const prev = root.querySelector("[data-carousel-prev]");
+    const next = root.querySelector("[data-carousel-next]");
+    const stage = root.querySelector(".camp-carousel-stage");
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    let activeIndex = 0;
+    let timer = 0;
+
+    function setActive(index) {
+      activeIndex = (index + slides.length) % slides.length;
+      slides.forEach((slide, slideIndex) => {
+        const isActive = slideIndex === activeIndex;
+        slide.classList.toggle("is-active", isActive);
+        slide.setAttribute("aria-hidden", String(!isActive));
+      });
+      thumbs.forEach((thumb, thumbIndex) => {
+        const isActive = thumbIndex === activeIndex;
+        thumb.classList.toggle("is-active", isActive);
+        thumb.setAttribute("aria-current", isActive ? "true" : "false");
+      });
+    }
+
+    function move(step) {
+      setActive(activeIndex + step);
+    }
+
+    function stopAuto() {
+      if (timer) {
+        window.clearInterval(timer);
+        timer = 0;
+      }
+    }
+
+    function startAuto() {
+      if (reduceMotion || timer || slides.length < 2) return;
+      timer = window.setInterval(() => move(1), 5200);
+    }
+
+    prev?.addEventListener("click", () => {
+      stopAuto();
+      move(-1);
+    });
+    next?.addEventListener("click", () => {
+      stopAuto();
+      move(1);
+    });
+    thumbs.forEach((thumb) => {
+      thumb.addEventListener("click", () => {
+        stopAuto();
+        setActive(Number(thumb.dataset.carouselThumb || 0));
+      });
+    });
+    stage?.addEventListener("keydown", (event) => {
+      if (event.key === "ArrowLeft") {
+        event.preventDefault();
+        stopAuto();
+        move(-1);
+      }
+      if (event.key === "ArrowRight") {
+        event.preventDefault();
+        stopAuto();
+        move(1);
+      }
+    });
+    root.addEventListener("mouseenter", stopAuto);
+    root.addEventListener("mouseleave", startAuto);
+    root.addEventListener("focusin", stopAuto);
+    root.addEventListener("focusout", startAuto);
+
+    setActive(0);
+    startAuto();
+  }
+
   window.addEventListener("scroll", updateHeader, { passive: true });
   copyButton?.addEventListener("click", copyRecruitTitle);
 
   renderTrack("dev");
+  initCarousel(carousel);
   updateHeader();
   observeSections();
 })();
