@@ -128,23 +128,10 @@ button {
 .brand {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
   min-width: 0;
   font-family: var(--display);
   font-size: 19px;
   font-weight: 900;
-}
-
-.brand-mark {
-  display: grid;
-  place-items: center;
-  flex: 0 0 auto;
-  width: 34px;
-  height: 34px;
-  border: 2px solid currentColor;
-  border-radius: 8px;
-  background: rgba(0, 169, 154, 0.14);
-  font-family: var(--mono);
 }
 
 .site-nav {
@@ -184,10 +171,12 @@ button {
   overflow: hidden;
   background: #101619;
   color: #f9fff9;
+  isolation: isolate;
 }
 
 .hero-media,
-.hero-shade {
+.hero-shade,
+.hero-visual {
   position: absolute;
   inset: 0;
   width: 100%;
@@ -195,18 +184,46 @@ button {
 }
 
 .hero-media {
+  z-index: 0;
   object-fit: cover;
+  opacity: 0.5;
+  filter: saturate(0.86) contrast(1.04) brightness(0.86);
+  transform: scale(1.018);
+}
+
+.hero-visual {
+  z-index: 1;
+  overflow: hidden;
+  pointer-events: none;
+  opacity: 0.94;
+}
+
+.hero-visual canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.hero-visual::after {
+  position: absolute;
+  inset: auto 0 0;
+  height: 36%;
+  background: linear-gradient(0deg, rgba(5, 9, 10, 0.82), transparent);
+  content: "";
 }
 
 .hero-shade {
+  z-index: 2;
   background:
-    linear-gradient(90deg, rgba(5, 9, 10, 0.86), rgba(5, 9, 10, 0.48) 42%, rgba(5, 9, 10, 0.16)),
-    linear-gradient(0deg, rgba(5, 9, 10, 0.72), transparent 34%, rgba(5, 9, 10, 0.42));
+    radial-gradient(circle at 78% 28%, rgba(0, 169, 154, 0.2), transparent 30%),
+    radial-gradient(circle at 58% 72%, rgba(243, 111, 50, 0.16), transparent 30%),
+    linear-gradient(90deg, rgba(5, 9, 10, 0.9), rgba(5, 9, 10, 0.58) 42%, rgba(5, 9, 10, 0.2)),
+    linear-gradient(0deg, rgba(5, 9, 10, 0.76), transparent 34%, rgba(5, 9, 10, 0.44));
 }
 
 .hero-content {
   position: relative;
-  z-index: 1;
+  z-index: 3;
   display: grid;
   align-content: center;
   width: min(1180px, calc(100% - 32px));
@@ -589,9 +606,15 @@ button {
   background: rgba(5, 9, 10, 0.66);
   color: #f9fff9;
   cursor: pointer;
-  font-size: 32px;
-  line-height: 1;
   backdrop-filter: blur(10px);
+}
+
+.carousel-control::before {
+  width: 11px;
+  height: 11px;
+  border: solid currentColor;
+  border-width: 0 2px 2px 0;
+  content: "";
 }
 
 .carousel-control:hover {
@@ -603,8 +626,16 @@ button {
   left: 12px;
 }
 
+.carousel-control-prev::before {
+  transform: translateX(2px) rotate(135deg);
+}
+
 .carousel-control-next {
   right: 12px;
+}
+
+.carousel-control-next::before {
+  transform: translateX(-2px) rotate(-45deg);
 }
 
 .carousel-thumbs {
@@ -1040,7 +1071,7 @@ button {
   }
 
   .hero {
-    min-height: 92svh;
+    min-height: 86svh;
   }
 
   .hero-shade {
@@ -1051,7 +1082,8 @@ button {
 
   .hero-content {
     width: min(100% - 24px, 1180px);
-    padding-top: 150px;
+    padding-top: 130px;
+    padding-bottom: 34px;
   }
 
   .hero h1 {
@@ -1067,7 +1099,11 @@ button {
   }
 
   .hero-metrics {
-    margin-top: 30px;
+    margin-top: 22px;
+  }
+
+  .hero-metrics div {
+    padding: 11px 14px;
   }
 
   .section {
@@ -1111,7 +1147,11 @@ button {
   .carousel-control {
     width: 36px;
     height: 36px;
-    font-size: 28px;
+  }
+
+  .carousel-control::before {
+    width: 9px;
+    height: 9px;
   }
 
   .track-tabs,

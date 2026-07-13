@@ -20,6 +20,5 @@ python -m http.server 4173
 - `assets/styles.css`：响应式视觉样式
 - `assets/main.js`：方向切换、导航状态、复制招新标题
 - `assets/dream-lab-hero.png`：首屏横幅视觉资产
-- `assets/favicon.png`：站点图标
 - `assets/recruitment-qr.jpg`：招新咨询群二维码
 - `assets/algorithm-camp-*.jpg`：往届算法训练营现场照片
