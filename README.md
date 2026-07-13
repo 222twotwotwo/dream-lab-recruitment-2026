@@ -22,3 +22,4 @@ python -m http.server 4173
 - `assets/dream-lab-hero.png`：首屏横幅视觉资产
 - `assets/favicon.png`：站点图标
 - `assets/recruitment-qr.jpg`：招新咨询群二维码
+- `assets/algorithm-camp-*.jpg`：往届算法训练营现场照片

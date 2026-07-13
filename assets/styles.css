@@ -415,6 +415,7 @@ button {
 }
 
 .proof-section::before,
+.camp-section::before,
 .tracks-section::before {
   position: absolute;
   left: 50%;
@@ -499,6 +500,143 @@ button {
   padding: 8px 11px;
   background: rgba(255, 255, 255, 0.74);
   color: var(--ink-soft);
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.camp-section {
+  position: relative;
+  color: #f9fff9;
+}
+
+.camp-section::before {
+  top: 0;
+  background:
+    linear-gradient(90deg, rgba(0, 169, 154, 0.18), transparent 42%),
+    linear-gradient(135deg, rgba(104, 72, 245, 0.22), transparent 48%),
+    #101619;
+}
+
+.camp-section .section-heading p:not(.eyebrow) {
+  color: #dce7df;
+}
+
+.camp-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(330px, 0.85fr);
+  gap: 18px;
+  align-items: start;
+}
+
+.camp-gallery {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.camp-photo {
+  position: relative;
+  min-width: 0;
+  margin: 0;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 8px;
+  background: #1c282a;
+}
+
+.camp-photo-main {
+  grid-column: 1 / -1;
+}
+
+.camp-photo img {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  filter: saturate(0.94) contrast(1.04);
+}
+
+.camp-photo figcaption {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  left: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 8px;
+  padding: 8px 10px;
+  background: rgba(5, 9, 10, 0.68);
+  color: #f9fff9;
+  font-size: 13px;
+  font-weight: 800;
+  backdrop-filter: blur(10px);
+}
+
+.camp-copy {
+  display: grid;
+  gap: 14px;
+}
+
+.camp-callout,
+.camp-card {
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.camp-callout {
+  display: grid;
+  gap: 10px;
+  padding: 22px;
+}
+
+.camp-callout h3,
+.camp-card h3 {
+  margin: 0;
+  color: #f9fff9;
+  font-family: var(--display);
+  line-height: 1.18;
+  letter-spacing: 0;
+}
+
+.camp-callout h3 {
+  font-size: 28px;
+}
+
+.camp-card h3 {
+  font-size: 21px;
+}
+
+.camp-callout p,
+.camp-card p {
+  margin: 0;
+  color: #dce7df;
+}
+
+.camp-cards {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.camp-card {
+  display: grid;
+  gap: 8px;
+  padding: 16px;
+}
+
+.event-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.event-strip span {
+  border: 1px solid rgba(0, 169, 154, 0.38);
+  border-radius: 8px;
+  padding: 8px 11px;
+  background: rgba(0, 169, 154, 0.12);
+  color: #dffaf5;
   font-family: var(--mono);
   font-size: 12px;
   font-weight: 900;
@@ -792,6 +930,7 @@ button {
   }
 
   .proof-layout,
+  .camp-layout,
   .track-board,
   .apply-section {
     grid-template-columns: 1fr;
@@ -871,10 +1010,26 @@ button {
   }
 
   .proof-panel,
+  .camp-callout,
+  .camp-card,
   .track-panel,
   .selection-grid article,
   .apply-section {
     padding: 20px;
+  }
+
+  .camp-gallery,
+  .camp-cards {
+    grid-template-columns: 1fr;
+  }
+
+  .camp-photo figcaption {
+    position: static;
+    border: 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 0;
+    background: rgba(255, 255, 255, 0.06);
+    backdrop-filter: none;
   }
 
   .track-tabs,
