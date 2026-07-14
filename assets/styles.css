@@ -23,11 +23,13 @@
 }
 
 html {
+  overflow-x: hidden;
   scroll-behavior: smooth;
   scroll-padding-top: 112px;
 }
 
 body {
+  overflow-x: hidden;
   min-width: 320px;
   margin: 0;
   background:
@@ -380,6 +382,7 @@ button {
 .promise-card,
 .proof-panel,
 .track-panel,
+.track-summary,
 .selection-grid article {
   border: 1px solid var(--line);
   border-radius: 8px;
@@ -758,17 +761,23 @@ button {
 
 .track-board {
   display: grid;
-  grid-template-columns: 250px minmax(0, 1fr);
-  gap: 16px;
+  grid-template-columns: minmax(420px, 0.86fr) minmax(0, 1fr);
+  gap: 20px;
   align-items: start;
 }
 
 .track-tabs {
   display: grid;
+  gap: 12px;
+}
+
+.track-choice {
+  display: grid;
   gap: 10px;
 }
 
 .track-tab {
+  width: 100%;
   min-height: 54px;
   border: 1px solid var(--line);
   border-radius: 8px;
@@ -782,6 +791,19 @@ button {
   font-weight: 900;
 }
 
+.track-summary {
+  padding: 18px 20px;
+}
+
+.track-summary[hidden] {
+  display: none;
+}
+
+.track-summary .track-detail-grid {
+  grid-template-columns: 1fr;
+  gap: 18px;
+}
+
 .track-tab:hover,
 .track-tab.is-active {
   border-color: rgba(0, 169, 154, 0.75);
@@ -791,6 +813,7 @@ button {
 
 .track-panel {
   display: grid;
+  align-content: start;
   gap: 18px;
   min-height: 360px;
   padding: 26px;
@@ -801,8 +824,15 @@ button {
   gap: 8px;
 }
 
+.track-meta-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
 .track-panel .track-tag {
-  justify-self: start;
+  flex: 0 0 auto;
   border: 1px solid rgba(0, 169, 154, 0.3);
   border-radius: 8px;
   padding: 5px 9px;
@@ -811,6 +841,44 @@ button {
   font-family: var(--mono);
   font-size: 12px;
   font-weight: 900;
+}
+
+.track-logo-list {
+  display: flex;
+  flex: 1 1 260px;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.track-logo {
+  display: inline-flex;
+  align-items: center;
+  min-width: 0;
+  max-width: 100%;
+  border: 1px solid rgba(143, 165, 160, 0.34);
+  border-radius: 8px;
+  padding: 4px 8px 4px 5px;
+  background: rgba(255, 255, 255, 0.68);
+  color: var(--ink-soft);
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 900;
+  line-height: 1.2;
+}
+
+.track-logo-img {
+  display: block;
+  flex: 0 0 auto;
+  width: 22px;
+  height: 22px;
+  margin-right: 6px;
+  object-fit: contain;
+}
+
+.track-logo-name {
+  overflow-wrap: anywhere;
 }
 
 .track-detail-grid {
@@ -1040,7 +1108,7 @@ button {
   }
 
   .track-tabs {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: 1fr;
   }
 }
 
@@ -1121,6 +1189,7 @@ button {
   .camp-callout,
   .camp-card,
   .track-panel,
+  .track-summary,
   .selection-grid article,
   .apply-section {
     padding: 20px;

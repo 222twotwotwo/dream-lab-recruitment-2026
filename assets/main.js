@@ -2,7 +2,14 @@
   const tracks = {
     dev: {
       title: "开发组",
-      tag: "Web / Backend / Client / Tech Media",
+      tag: "Web / Backend / Client",
+      logos: [
+        { icon: "./assets/logos/java.svg", label: "Java" },
+        { icon: "./assets/logos/go.svg", label: "Go" },
+        { icon: "./assets/logos/javascript.svg", label: "JavaScript" },
+        { icon: "./assets/logos/typescript.svg", label: "TypeScript" },
+        { icon: "./assets/logos/kotlin.svg", label: "Kotlin" }
+      ],
       intro:
         "适合想把计算机基础落到真实项目里的同学。具备基础、熟练掌握一门语言更好；零基础但学习意愿强、愿意主动追赶，也可以报名。",
       details: [
@@ -10,7 +17,7 @@
           title: "招募要求",
           items: [
             "具备计算机基础，熟练掌握一门语言及相关方向开发能力",
-            "方向覆盖前端、后端、客户端、数媒组技术方向等",
+            "方向覆盖前端、后端、客户端等",
             "零基础同学可通过学习任务和指导班逐步追赶"
           ]
         },
@@ -24,9 +31,55 @@
         }
       ]
     },
+    media: {
+      title: "Digital Media 组",
+      tag: "DCC / Game Engine / AIGC / XR",
+      logos: [
+        { icon: "./assets/logos/cplusplus.svg", label: "C++" },
+        { icon: "./assets/logos/csharp.svg", label: "C#" },
+        { icon: "./assets/logos/unrealengine.svg", label: "Unreal Engine" },
+        { icon: "./assets/logos/unity.svg", label: "Unity" },
+        { icon: "./assets/logos/blender.svg", label: "Blender" },
+        { icon: "./assets/logos/maya.svg", label: "Maya" }
+      ],
+      intro:
+        "适合对三维内容、实时引擎、AIGC 和交互可视化感兴趣的同学。这里更看重作品意识、审美判断和愿意长期打磨复杂工具链的耐心。",
+      details: [
+        {
+          title: "招募要求",
+          items: [
+            "至少了解或使用过一款 DCC 软件或游戏引擎（Unity / Unreal），并附自己的作品展示",
+            "了解 Blender、Maya、3ds Max、ZBrush、Substance Painter、Houdini 等工具更好",
+            "了解或使用过主流 AIGC 工具，如 Midjourney、ComfyUI",
+            "有基本的逻辑思维和数学直觉",
+            "有良好的审美能力，有任意美术能力优先",
+            "英语阅读能力尚可",
+            "有编程基础，任何语言均可，C++ / C# 优先",
+            "对游戏引擎（Unity / Unreal）、着色器 / 材质、3D 建模 / UV 展开 / 法线贴图、物理引擎 / 粒子系统中任一概念有模糊认知",
+            "坐得住冷板凳，不怕从零开始，有好奇心"
+          ]
+        },
+        {
+          title: "发展方向",
+          items: [
+            "技术美术",
+            "数字孪生及其可视化",
+            "三维仿真开发",
+            "数字人开发",
+            "影视与虚拟制片",
+            "游戏引擎 / 图形开发工程师",
+            "XR 应用 / 开发"
+          ]
+        }
+      ]
+    },
     contest: {
       title: "竞赛组",
       tag: "Algorithm / Modeling / Kaggle",
+      logos: [
+        { icon: "./assets/logos/cplusplus.svg", label: "C++" },
+        { icon: "./assets/logos/python.svg", label: "Python" }
+      ],
       intro:
         "适合希望深入钻研计算机技术、积累竞赛经验的同学。这里强调稳定训练、复盘和模拟赛，把热爱打磨成可量化的结果。",
       details: [
@@ -59,6 +112,11 @@
     agent: {
       title: "Agent 组",
       tag: "Tool Calling / Context / RAG",
+      logos: [
+        { icon: "./assets/logos/python.svg", label: "Python" },
+        { icon: "./assets/logos/typescript.svg", label: "TypeScript" },
+        { icon: "./assets/logos/javascript.svg", label: "JavaScript" }
+      ],
       intro:
         "适合对 AI Agent 开发感兴趣、想做自己的 Agent 框架或工具运行时的同学。不满足于只用产品，而是想搞清楚 Agent 如何调度工具、读取上下文并和系统交互。",
       details: [
@@ -85,6 +143,7 @@
   const header = document.querySelector(".site-header");
   const navLinks = Array.from(document.querySelectorAll(".site-nav a"));
   const trackButtons = Array.from(document.querySelectorAll("[data-track]"));
+  const trackSummaries = Array.from(document.querySelectorAll("[data-track-summary]"));
   const trackPanel = document.querySelector("#track-panel");
   const copyButton = document.querySelector("[data-copy-title]");
   const copyStatus = document.querySelector(".copy-status");
@@ -102,37 +161,89 @@
       .replace(/'/g, "&#039;");
   }
 
+  function isMovedTrackDetail(detail) {
+    return detail.title === "招募要求" || detail.title === "招募面向";
+  }
+
+  function renderTrackDetail(detail) {
+    return `
+      <section class="track-detail">
+        <h4>${escapeHtml(detail.title)}</h4>
+        <ul>
+          ${detail.items.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}
+        </ul>
+      </section>
+    `;
+  }
+
+  function renderTrackDetails(details) {
+    return `
+      <div class="track-detail-grid">
+        ${details.map(renderTrackDetail).join("")}
+      </div>
+    `;
+  }
+
+  function renderTrackLogos(logos) {
+    if (!logos?.length) return "";
+
+    return `
+      <div class="track-logo-list" aria-label="相关技术标识">
+        ${logos
+          .map(
+            (logo) => `
+              <span class="track-logo" title="${escapeHtml(logo.label)}">
+                <img class="track-logo-img" src="${escapeHtml(logo.icon)}" alt="" width="24" height="24" loading="lazy" decoding="async" />
+                <span class="track-logo-name">${escapeHtml(logo.label)}</span>
+              </span>
+            `
+          )
+          .join("")}
+      </div>
+    `;
+  }
+
+  function renderTrackPanelDetails(details) {
+    const panelDetails = details.filter((detail) => !isMovedTrackDetail(detail));
+
+    return `
+      <div class="track-detail-grid">
+        ${panelDetails.map(renderTrackDetail).join("")}
+      </div>
+    `;
+  }
+
   function renderTrack(key) {
-    const track = tracks[key] || tracks.dev;
+    const selectedKey = tracks[key] ? key : "dev";
+    const track = tracks[selectedKey];
+    const movedDetails = track.details.filter(isMovedTrackDetail);
+    let activeSummary = null;
 
     trackButtons.forEach((button) => {
-      const isActive = button.dataset.track === key;
+      const isActive = button.dataset.track === selectedKey;
       button.classList.toggle("is-active", isActive);
-      button.setAttribute("aria-selected", String(isActive));
+      button.setAttribute("aria-expanded", String(isActive));
+    });
+
+    trackSummaries.forEach((summary) => {
+      const isActive = summary.dataset.trackSummary === selectedKey;
+      summary.hidden = !isActive;
+      summary.innerHTML = isActive ? renderTrackDetails(movedDetails) : "";
+      if (isActive) activeSummary = summary;
     });
 
     if (!trackPanel) return;
 
     trackPanel.innerHTML = `
       <header>
-        <span class="track-tag">${escapeHtml(track.tag)}</span>
+        <div class="track-meta-row">
+          <span class="track-tag">${escapeHtml(track.tag)}</span>
+          ${renderTrackLogos(track.logos)}
+        </div>
         <h3>${escapeHtml(track.title)}</h3>
         <p>${escapeHtml(track.intro)}</p>
       </header>
-      <div class="track-detail-grid">
-        ${track.details
-          .map(
-            (detail) => `
-              <section class="track-detail">
-                <h4>${escapeHtml(detail.title)}</h4>
-                <ul>
-                  ${detail.items.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}
-                </ul>
-              </section>
-            `
-          )
-          .join("")}
-      </div>
+      ${renderTrackPanelDetails(track.details)}
     `;
 
     if (window.anime && !reduceMotionQuery.matches) {
@@ -144,6 +255,17 @@
         duration: 420,
         easing: "easeOutCubic"
       });
+
+      if (activeSummary) {
+        window.anime.remove(activeSummary);
+        window.anime({
+          targets: activeSummary,
+          opacity: [0, 1],
+          translateY: [-8, 0],
+          duration: 360,
+          easing: "easeOutCubic"
+        });
+      }
     }
   }
 

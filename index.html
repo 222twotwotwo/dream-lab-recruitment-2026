@@ -43,7 +43,7 @@
           <p class="hero-kicker">2026 秋季招新前瞻 / 系统培养 / 开放资源</p>
           <h1 id="hero-title">逐梦创新实验室 2026 级新生招募计划</h1>
           <p class="hero-lead">
-            零基础可以从这里起步，有基础也能直接进入更硬核的项目、竞赛与 Agent 实战。开放自由的学习氛围，师兄师姐持续指导，一起把兴趣变成拿得出手的能力。
+            零基础可以从这里起步，有基础也能直接进入更硬核的项目、Digital Media、竞赛与 Agent 实战。开放自由的学习氛围，师兄师姐持续指导，一起把兴趣变成拿得出手的能力。
           </p>
           <div class="hero-actions" aria-label="主要行动">
             <a class="button button-primary" href="#apply">了解报名方式</a>
@@ -52,7 +52,7 @@
           <dl class="hero-metrics" aria-label="实验室亮点">
             <div>
               <dt>培养路径</dt>
-              <dd>开发 / 竞赛 / Agent</dd>
+              <dd>开发 / Digital Media / 竞赛 / Agent</dd>
             </div>
             <div>
               <dt>面向校区</dt>
@@ -88,7 +88,7 @@
           <article class="promise-card">
             <span class="card-index">03</span>
             <h3>资源开放</h3>
-            <p>Java / Go 后端、Web 前端、Kotlin 客户端、算法竞赛、AI Agent 等资源开放共享，按兴趣进入对应小组。</p>
+            <p>Java / Go 后端、Web 前端、Kotlin 客户端、Digital Media、算法竞赛、AI Agent 等资源开放共享，按兴趣进入对应小组。</p>
           </article>
           <article class="promise-card">
             <span class="card-index">04</span>
@@ -268,16 +268,31 @@
         </div>
 
         <div class="track-board">
-          <div class="track-tabs" role="tablist" aria-label="招新方向">
-            <button class="track-tab is-active" type="button" role="tab" aria-selected="true" data-track="dev">
-              开发组
-            </button>
-            <button class="track-tab" type="button" role="tab" aria-selected="false" data-track="contest">
-              竞赛组
-            </button>
-            <button class="track-tab" type="button" role="tab" aria-selected="false" data-track="agent">
-              Agent 组
-            </button>
+          <div class="track-tabs" aria-label="招新方向">
+            <div class="track-choice">
+              <button class="track-tab is-active" type="button" aria-expanded="true" aria-controls="track-summary-dev" data-track="dev">
+                开发组
+              </button>
+              <div class="track-summary" id="track-summary-dev" data-track-summary="dev"></div>
+            </div>
+            <div class="track-choice">
+              <button class="track-tab" type="button" aria-expanded="false" aria-controls="track-summary-media" data-track="media">
+                Digital Media 组
+              </button>
+              <div class="track-summary" id="track-summary-media" data-track-summary="media" hidden></div>
+            </div>
+            <div class="track-choice">
+              <button class="track-tab" type="button" aria-expanded="false" aria-controls="track-summary-contest" data-track="contest">
+                竞赛组
+              </button>
+              <div class="track-summary" id="track-summary-contest" data-track-summary="contest" hidden></div>
+            </div>
+            <div class="track-choice">
+              <button class="track-tab" type="button" aria-expanded="false" aria-controls="track-summary-agent" data-track="agent">
+                Agent 组
+              </button>
+              <div class="track-summary" id="track-summary-agent" data-track-summary="agent" hidden></div>
+            </div>
           </div>
           <article class="track-panel" id="track-panel" aria-live="polite"></article>
         </div>
