@@ -9,6 +9,7 @@ Downloaded or extracted from official brand websites on 2026-07-15.
 - `yoozoo.png`: https://www.yoozoo.com/ via https://pic.youzu.com/youzu_cn/yoozoo/images/logo-balck_default.png
 - `huolala.ico`: https://www.huolala.cn/favicon.ico
 - `inovance.svg`: https://www.inovance.com/portal/en/index.html inline SVG symbol from official frontend bundle
+- `asiainfo.svg`: https://www.asiainfo.com/ via https://www.asiainfo.com/include/images/logo.svg
 - `xiaohongshu.png`: https://www.xiaohongshu.com/ inline header logo image
 - `qiniu.jpg`: https://www.qiniu.com/ via https://www-static.qbox.me/_next/static/media/logo.0fc18feaa621d2068a7180631f742256.jpg
 - `trs.png`: https://www.trs.com.cn/images/TRS_logo.png

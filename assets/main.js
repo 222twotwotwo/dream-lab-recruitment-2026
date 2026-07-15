@@ -418,37 +418,34 @@
 
     const track = root.querySelector("[data-company-track]");
     const reduceMotion = reduceMotionQuery.matches;
-    let timer = 0;
+    const speed = 92;
+    const originalCards = track ? Array.from(track.querySelectorAll(".company-card")) : [];
+    let frame = 0;
+    let lastTime = 0;
+    let loopWidth = 0;
 
-    function getCards() {
-      return track ? Array.from(track.querySelectorAll(".company-card")) : [];
+    function refreshLoopWidth() {
+      const firstClone = track?.querySelector("[data-company-clone]");
+      loopWidth = firstClone && originalCards[0] ? firstClone.offsetLeft - originalCards[0].offsetLeft : 0;
     }
 
-    function getCurrentIndex(cards) {
-      if (!track || !cards.length) return 0;
-      const base = cards[0].offsetLeft;
-      const positions = cards.map((card) => Math.abs(card.offsetLeft - base - track.scrollLeft));
-      return positions.indexOf(Math.min(...positions));
-    }
-
-    function scrollToIndex(index, behavior = "smooth") {
-      const cards = getCards();
-      if (!track || !cards.length) return;
-
-      const nextIndex = (index + cards.length) % cards.length;
-      const left = cards[nextIndex].offsetLeft - cards[0].offsetLeft;
-      track.scrollTo({
-        left,
-        behavior: reduceMotion ? "auto" : behavior
+    function buildLoop() {
+      if (!track || reduceMotion || originalCards.length < 2) return;
+      track.querySelectorAll("[data-company-clone]").forEach((clone) => clone.remove());
+      originalCards.forEach((card) => {
+        const clone = card.cloneNode(true);
+        clone.dataset.companyClone = "true";
+        clone.setAttribute("aria-hidden", "true");
+        track.appendChild(clone);
       });
+      refreshLoopWidth();
     }
 
     function animateTrack() {
       if (!window.anime || reduceMotion || !track) return;
-      const cards = getCards();
-      window.anime.remove(cards);
+      window.anime.remove(originalCards);
       window.anime({
-        targets: cards,
+        targets: originalCards,
         opacity: [0, 1],
         translateY: [12, 0],
         delay: window.anime.stagger(55),
@@ -457,22 +454,32 @@
       });
     }
 
-    function move(step) {
-      const cards = getCards();
-      if (!track || cards.length < 2) return;
-      scrollToIndex(getCurrentIndex(cards) + step);
+    function stopAuto() {
+      if (frame) {
+        window.cancelAnimationFrame(frame);
+        frame = 0;
+      }
+      lastTime = 0;
     }
 
-    function stopAuto() {
-      if (timer) {
-        window.clearInterval(timer);
-        timer = 0;
+    function tick(now) {
+      if (!track || !loopWidth) {
+        stopAuto();
+        return;
       }
+      if (!lastTime) lastTime = now;
+      const elapsed = Math.min(now - lastTime, 64);
+      lastTime = now;
+      track.scrollLeft += (speed * elapsed) / 1000;
+      if (track.scrollLeft >= loopWidth) {
+        track.scrollLeft -= loopWidth;
+      }
+      frame = window.requestAnimationFrame(tick);
     }
 
     function startAuto() {
-      if (reduceMotion || timer) return;
-      timer = window.setInterval(() => move(1), 4400);
+      if (reduceMotion || frame || !loopWidth) return;
+      frame = window.requestAnimationFrame(tick);
     }
 
     root.addEventListener("mouseenter", stopAuto);
@@ -480,6 +487,12 @@
     root.addEventListener("focusin", stopAuto);
     root.addEventListener("focusout", startAuto);
 
+    buildLoop();
+    if (window.ResizeObserver && track) {
+      new ResizeObserver(refreshLoopWidth).observe(track);
+    } else {
+      window.addEventListener("resize", refreshLoopWidth);
+    }
     track?.scrollTo({ left: 0, behavior: "auto" });
     animateTrack();
     startAuto();

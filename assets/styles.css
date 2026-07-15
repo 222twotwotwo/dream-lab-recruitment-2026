@@ -523,10 +523,10 @@ button {
   min-width: 0;
   overflow-x: auto;
   padding: 2px 0 8px;
-  scroll-behavior: smooth;
+  scroll-behavior: auto;
   scroll-padding: 1px;
-  scroll-snap-type: x mandatory;
   scrollbar-width: none;
+  will-change: scroll-position;
 }
 
 .company-track::-webkit-scrollbar {
@@ -543,7 +543,6 @@ button {
   border-radius: 8px;
   padding: 16px;
   background: rgba(255, 255, 255, 0.86);
-  scroll-snap-align: start;
   transition:
     transform 160ms ease,
     border-color 160ms ease,
