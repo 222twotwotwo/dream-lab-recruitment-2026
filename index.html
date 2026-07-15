@@ -372,14 +372,20 @@
                 开发组
               </button>
               <div class="track-select-card">
-                <label class="track-select-label" for="dev-track-select">开发细分方向</label>
-                <div class="track-select-wrap">
-                  <select class="track-select" id="dev-track-select" data-dev-track-select aria-label="开发组细分方向">
-                    <option value="frontend">前端</option>
-                    <option value="backend">后端</option>
-                    <option value="client">客户端</option>
-                    <option value="media">数媒</option>
-                  </select>
+                <span class="track-select-label">开发细分方向</span>
+                <div class="track-subgroup-list" aria-label="开发组细分方向">
+                  <button class="track-subgroup is-active" type="button" aria-pressed="true" aria-controls="track-panel" data-track="frontend">
+                    前端
+                  </button>
+                  <button class="track-subgroup" type="button" aria-pressed="false" aria-controls="track-panel" data-track="backend">
+                    后端
+                  </button>
+                  <button class="track-subgroup" type="button" aria-pressed="false" aria-controls="track-panel" data-track="client">
+                    客户端
+                  </button>
+                  <button class="track-subgroup" type="button" aria-pressed="false" aria-controls="track-panel" data-track="media">
+                    数媒
+                  </button>
                 </div>
               </div>
             </div>

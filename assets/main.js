@@ -195,7 +195,6 @@
   const header = document.querySelector(".site-header");
   const navLinks = Array.from(document.querySelectorAll(".site-nav a"));
   const trackButtons = Array.from(document.querySelectorAll("[data-track]"));
-  const devTrackSelect = document.querySelector("[data-dev-track-select]");
   const trackPanel = document.querySelector("#track-panel");
   const copyButton = document.querySelector("[data-copy-title]");
   const copyStatus = document.querySelector(".copy-status");
@@ -264,10 +263,6 @@
       button.setAttribute("aria-pressed", String(isActive));
     });
 
-    if (devTrackSelect && devTrackKeys.includes(selectedKey)) {
-      devTrackSelect.value = selectedKey;
-    }
-
     if (!trackPanel) return;
 
     trackPanel.innerHTML = `
@@ -297,11 +292,9 @@
 
   trackButtons.forEach((button) => {
     button.addEventListener("click", () => {
-      renderTrack(button.dataset.track === "dev" ? devTrackSelect?.value || "frontend" : button.dataset.track);
+      renderTrack(button.dataset.track === "dev" ? "frontend" : button.dataset.track);
     });
   });
-
-  devTrackSelect?.addEventListener("change", () => renderTrack(devTrackSelect.value));
 
   function updateHeader() {
     if (!header) return;
