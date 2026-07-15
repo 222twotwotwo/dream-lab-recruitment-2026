@@ -514,14 +514,17 @@ button {
 
 .company-viewport {
   min-width: 0;
+  pointer-events: none;
+  user-select: none;
 }
 
 .company-track {
   display: flex;
   gap: 12px;
   min-width: 0;
-  overflow-x: auto;
+  overflow-x: hidden;
   padding: 2px 0 8px;
+  touch-action: pan-y;
   scroll-behavior: auto;
   scroll-padding: 1px;
   scrollbar-width: none;

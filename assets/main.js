@@ -504,11 +504,6 @@
       frame = window.requestAnimationFrame(tick);
     }
 
-    root.addEventListener("mouseenter", stopAuto);
-    root.addEventListener("mouseleave", startAuto);
-    root.addEventListener("focusin", stopAuto);
-    root.addEventListener("focusout", startAuto);
-
     buildLoop();
     if (window.ResizeObserver && track) {
       new ResizeObserver(refreshLoopWidth).observe(track);
