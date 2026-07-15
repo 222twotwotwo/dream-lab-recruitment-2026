@@ -513,106 +513,6 @@ button {
   margin-top: 16px;
 }
 
-.company-showcase-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 14px;
-}
-
-.company-filter-row {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  min-width: 0;
-}
-
-.company-tabs {
-  display: inline-flex;
-  gap: 4px;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  padding: 4px;
-  background: rgba(255, 255, 255, 0.74);
-}
-
-.company-tab {
-  min-height: 38px;
-  border: 1px solid transparent;
-  border-radius: 7px;
-  padding: 8px 16px;
-  background: transparent;
-  color: var(--ink-soft);
-  cursor: pointer;
-  font-family: var(--mono);
-  font-size: 13px;
-  font-weight: 900;
-}
-
-.company-tab:hover,
-.company-tab.is-active {
-  border-color: rgba(0, 169, 154, 0.58);
-  background: #102022;
-  color: #f9fff9;
-}
-
-.company-year-tag {
-  display: inline-flex;
-  align-items: center;
-  min-height: 38px;
-  border: 1px solid rgba(0, 169, 154, 0.38);
-  border-radius: 999px;
-  padding: 0 14px;
-  background: rgba(255, 255, 255, 0.86);
-  color: #102022;
-  font-family: var(--mono);
-  font-size: 12px;
-  font-weight: 900;
-  line-height: 1;
-  white-space: nowrap;
-}
-
-.company-controls {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.company-control {
-  position: relative;
-  display: grid;
-  place-items: center;
-  width: 40px;
-  height: 40px;
-  border: 1px solid var(--line);
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.8);
-  color: var(--ink);
-  cursor: pointer;
-}
-
-.company-control::before {
-  width: 10px;
-  height: 10px;
-  border: solid currentColor;
-  border-width: 0 2px 2px 0;
-  content: "";
-}
-
-.company-control:hover {
-  border-color: rgba(0, 169, 154, 0.72);
-  background: rgba(0, 169, 154, 0.12);
-  color: var(--teal-dark);
-}
-
-.company-control-prev::before {
-  transform: translateX(2px) rotate(135deg);
-}
-
-.company-control-next::before {
-  transform: translateX(-2px) rotate(-45deg);
-}
-
 .company-viewport {
   min-width: 0;
 }
@@ -633,10 +533,6 @@ button {
   display: none;
 }
 
-.company-track[hidden] {
-  display: none;
-}
-
 .company-card {
   display: grid;
   align-content: start;
@@ -652,10 +548,6 @@ button {
     transform 160ms ease,
     border-color 160ms ease,
     box-shadow 160ms ease;
-}
-
-.company-track[data-company-track="employment"] .company-card {
-  flex-basis: min(360px, calc((100% - 12px) / 2));
 }
 
 .company-card:hover {
@@ -1286,8 +1178,7 @@ button {
     grid-template-columns: 1fr;
   }
 
-  .company-card,
-  .company-track[data-company-track="employment"] .company-card {
+  .company-card {
     flex-basis: min(280px, calc((100% - 12px) / 2));
   }
 
@@ -1379,47 +1270,7 @@ button {
     padding: 20px;
   }
 
-  .company-showcase-head {
-    align-items: stretch;
-    flex-direction: column;
-  }
-
-  .company-filter-row {
-    width: 100%;
-  }
-
-  .company-tabs {
-    flex: 1;
-    min-width: 0;
-  }
-
-  .company-tab {
-    flex: 1;
-    padding-right: 12px;
-    padding-left: 12px;
-  }
-
-  .company-year-tag {
-    min-height: 36px;
-    padding: 0 12px;
-  }
-
-  .company-controls {
-    justify-content: flex-end;
-  }
-
-  .company-control {
-    width: 36px;
-    height: 36px;
-  }
-
-  .company-control::before {
-    width: 9px;
-    height: 9px;
-  }
-
-  .company-card,
-  .company-track[data-company-track="employment"] .company-card {
+  .company-card {
     flex-basis: min(280px, 86vw);
     min-height: 188px;
   }

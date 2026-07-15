@@ -416,23 +416,15 @@
   function initCompanyCarousel(root) {
     if (!root) return;
 
-    const tabs = Array.from(root.querySelectorAll("[data-company-tab]"));
-    const tracks = Array.from(root.querySelectorAll("[data-company-track]"));
-    const prev = root.querySelector("[data-company-prev]");
-    const next = root.querySelector("[data-company-next]");
+    const track = root.querySelector("[data-company-track]");
     const reduceMotion = reduceMotionQuery.matches;
-    let activeKey = tabs.find((tab) => tab.classList.contains("is-active"))?.dataset.companyTab || tabs[0]?.dataset.companyTab;
     let timer = 0;
 
-    function getTrack(key = activeKey) {
-      return tracks.find((track) => track.dataset.companyTrack === key);
-    }
-
-    function getCards(track = getTrack()) {
+    function getCards() {
       return track ? Array.from(track.querySelectorAll(".company-card")) : [];
     }
 
-    function getCurrentIndex(track, cards) {
+    function getCurrentIndex(cards) {
       if (!track || !cards.length) return 0;
       const base = cards[0].offsetLeft;
       const positions = cards.map((card) => Math.abs(card.offsetLeft - base - track.scrollLeft));
@@ -440,8 +432,7 @@
     }
 
     function scrollToIndex(index, behavior = "smooth") {
-      const track = getTrack();
-      const cards = getCards(track);
+      const cards = getCards();
       if (!track || !cards.length) return;
 
       const nextIndex = (index + cards.length) % cards.length;
@@ -452,9 +443,9 @@
       });
     }
 
-    function animateTrack(track) {
+    function animateTrack() {
       if (!window.anime || reduceMotion || !track) return;
-      const cards = getCards(track);
+      const cards = getCards();
       window.anime.remove(cards);
       window.anime({
         targets: cards,
@@ -466,29 +457,10 @@
       });
     }
 
-    function setActive(key) {
-      activeKey = key;
-      tabs.forEach((tab) => {
-        const isActive = tab.dataset.companyTab === key;
-        tab.classList.toggle("is-active", isActive);
-        tab.setAttribute("aria-selected", String(isActive));
-      });
-      tracks.forEach((track) => {
-        const isActive = track.dataset.companyTrack === key;
-        track.hidden = !isActive;
-        track.classList.toggle("is-active", isActive);
-        if (isActive) {
-          track.scrollTo({ left: 0, behavior: "auto" });
-          animateTrack(track);
-        }
-      });
-    }
-
     function move(step) {
-      const track = getTrack();
-      const cards = getCards(track);
+      const cards = getCards();
       if (!track || cards.length < 2) return;
-      scrollToIndex(getCurrentIndex(track, cards) + step);
+      scrollToIndex(getCurrentIndex(cards) + step);
     }
 
     function stopAuto() {
@@ -503,27 +475,13 @@
       timer = window.setInterval(() => move(1), 4400);
     }
 
-    tabs.forEach((tab) => {
-      tab.addEventListener("click", () => {
-        stopAuto();
-        setActive(tab.dataset.companyTab);
-        startAuto();
-      });
-    });
-    prev?.addEventListener("click", () => {
-      stopAuto();
-      move(-1);
-    });
-    next?.addEventListener("click", () => {
-      stopAuto();
-      move(1);
-    });
     root.addEventListener("mouseenter", stopAuto);
     root.addEventListener("mouseleave", startAuto);
     root.addEventListener("focusin", stopAuto);
     root.addEventListener("focusout", startAuto);
 
-    setActive(activeKey);
+    track?.scrollTo({ left: 0, behavior: "auto" });
+    animateTrack();
     startAuto();
   }
 
