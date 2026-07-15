@@ -1,32 +1,84 @@
 (function () {
   const tracks = {
-    dev: {
-      title: "开发组",
-      tag: "Web / Backend / Client",
+    frontend: {
+      title: "开发组 - 前端",
+      tag: "Web / JavaScript / TypeScript",
       logos: [
-        { icon: "./assets/logos/java.svg", label: "Java" },
-        { icon: "./assets/logos/go.svg", label: "Go" },
         { icon: "./assets/logos/javascript.svg", label: "JavaScript" },
-        { icon: "./assets/logos/typescript.svg", label: "TypeScript" },
-        { icon: "./assets/logos/kotlin.svg", label: "Kotlin" }
+        { icon: "./assets/logos/typescript.svg", label: "TypeScript" }
       ],
       intro:
-        "适合想把计算机基础落到真实项目里的同学。具备基础、熟练掌握一门语言更好；零基础但学习意愿强、愿意主动追赶，也可以报名。",
+        "适合想做网页交互、工程化和产品界面的同学。重点训练 HTML / CSS / JavaScript 基础、组件化思维和真实项目协作能力。",
       details: [
         {
           title: "招募要求",
           items: [
-            "具备计算机基础，熟练掌握一门语言及相关方向开发能力",
-            "方向覆盖前端、后端、客户端等",
-            "零基础同学可通过学习任务和指导班逐步追赶"
+            "具备基础计算机思维，愿意系统学习前端基础与浏览器工作方式",
+            "熟悉 HTML / CSS / JavaScript 更好，零基础同学可通过任务逐步追赶",
+            "对界面细节、交互体验和工程质量有耐心"
           ]
         },
         {
           title: "可获得资源",
           items: [
-            "后端有 Java / Go 两种方向的丰富资源",
-            "前端覆盖 Web 技术栈与工程化实践",
-            "客户端由 Kotlin 学长言传身教"
+            "Web 前端学习路线、工程化实践和项目拆解",
+            "组件开发、页面适配、动效实现和调试经验",
+            "参与实验室真实站点、工具页或活动页面开发"
+          ]
+        }
+      ]
+    },
+    backend: {
+      title: "开发组 - 后端",
+      tag: "Java / Go / Service",
+      logos: [
+        { icon: "./assets/logos/java.svg", label: "Java" },
+        { icon: "./assets/logos/go.svg", label: "Go" }
+      ],
+      intro:
+        "适合想把业务逻辑、数据存储和服务稳定性做扎实的同学。后端方向围绕 Java / Go、接口设计、数据库和工程实践展开。",
+      details: [
+        {
+          title: "招募要求",
+          items: [
+            "具备计算机基础，愿意深入学习一门后端语言和常见开发规范",
+            "了解 Java / Go、数据库、HTTP 接口任一方向更好",
+            "能坚持完成阶段任务，并在代码评审中持续改进"
+          ]
+        },
+        {
+          title: "可获得资源",
+          items: [
+            "Java / Go 两种方向的后端学习资料和项目案例",
+            "接口设计、数据库建模、服务部署和故障排查训练",
+            "由学长带着理解真实后端项目的协作流程"
+          ]
+        }
+      ]
+    },
+    client: {
+      title: "开发组 - 客户端",
+      tag: "Kotlin / Android / App",
+      logos: [
+        { icon: "./assets/logos/kotlin.svg", label: "Kotlin" }
+      ],
+      intro:
+        "适合希望做移动端应用、设备侧交互和 App 工程的同学。客户端方向以 Kotlin 为主，强调界面、状态和本地能力的完整实现。",
+      details: [
+        {
+          title: "招募要求",
+          items: [
+            "具备基础编程能力，愿意学习 Kotlin 与客户端开发方式",
+            "对 App 交互、页面状态、接口联调和设备适配感兴趣",
+            "零基础同学可从语法、页面和小功能任务逐步进入"
+          ]
+        },
+        {
+          title: "可获得资源",
+          items: [
+            "Kotlin 客户端方向由学长持续指导",
+            "从基础页面、接口联调到完整 App 功能的实践任务",
+            "理解客户端项目结构、调试方式和发布前检查"
           ]
         }
       ]
@@ -143,6 +195,7 @@
   const header = document.querySelector(".site-header");
   const navLinks = Array.from(document.querySelectorAll(".site-nav a"));
   const trackButtons = Array.from(document.querySelectorAll("[data-track]"));
+  const devTrackSelect = document.querySelector("[data-dev-track-select]");
   const trackPanel = document.querySelector("#track-panel");
   const copyButton = document.querySelector("[data-copy-title]");
   const copyStatus = document.querySelector(".copy-status");
@@ -151,6 +204,7 @@
   const heroSceneRoot = document.querySelector("[data-hero-scene]");
   const reduceMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
   const THREE_MODULE_URL = "https://cdn.jsdelivr.net/npm/three@0.165.0/build/three.module.js";
+  const devTrackKeys = ["frontend", "backend", "client", "media"];
 
   function escapeHtml(value) {
     return String(value)
@@ -200,14 +254,19 @@
   }
 
   function renderTrack(key) {
-    const selectedKey = tracks[key] ? key : "dev";
+    const selectedKey = tracks[key] ? key : "frontend";
     const track = tracks[selectedKey];
 
     trackButtons.forEach((button) => {
-      const isActive = button.dataset.track === selectedKey;
+      const trackKey = button.dataset.track;
+      const isActive = trackKey === "dev" ? devTrackKeys.includes(selectedKey) : trackKey === selectedKey;
       button.classList.toggle("is-active", isActive);
       button.setAttribute("aria-pressed", String(isActive));
     });
+
+    if (devTrackSelect && devTrackKeys.includes(selectedKey)) {
+      devTrackSelect.value = selectedKey;
+    }
 
     if (!trackPanel) return;
 
@@ -237,8 +296,12 @@
   }
 
   trackButtons.forEach((button) => {
-    button.addEventListener("click", () => renderTrack(button.dataset.track));
+    button.addEventListener("click", () => {
+      renderTrack(button.dataset.track === "dev" ? devTrackSelect?.value || "frontend" : button.dataset.track);
+    });
   });
+
+  devTrackSelect?.addEventListener("change", () => renderTrack(devTrackSelect.value));
 
   function updateHeader() {
     if (!header) return;
@@ -898,7 +961,7 @@
   window.addEventListener("scroll", updateHeader, { passive: true });
   copyButton?.addEventListener("click", copyRecruitTitle);
 
-  renderTrack("dev");
+  renderTrack("frontend");
   initCarousel(carousel);
   initCompanyCarousel(companyCarousel);
   initPageMotion();

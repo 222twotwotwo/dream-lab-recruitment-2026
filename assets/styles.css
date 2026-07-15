@@ -840,6 +840,11 @@ button {
   gap: 12px;
 }
 
+.track-dev-picker {
+  display: grid;
+  gap: 8px;
+}
+
 .track-tab {
   width: 100%;
   min-height: 54px;
@@ -853,6 +858,32 @@ button {
   font-family: var(--display);
   font-size: 20px;
   font-weight: 900;
+}
+
+.track-select-label {
+  color: var(--ink-soft);
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.track-select {
+  width: 100%;
+  min-height: 44px;
+  border: 1px solid rgba(143, 165, 160, 0.42);
+  border-radius: 8px;
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.86);
+  color: var(--ink);
+  cursor: pointer;
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.track-select:focus-visible {
+  outline: 3px solid rgba(0, 169, 154, 0.24);
+  outline-offset: 2px;
 }
 
 .track-tab:hover,
