@@ -507,22 +507,178 @@ button {
   background: rgba(0, 169, 154, 0.1);
 }
 
-.company-strip {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 14px;
+.company-showcase {
+  display: grid;
+  gap: 12px;
+  margin-top: 16px;
 }
 
-.company-strip span {
+.company-showcase-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.company-tabs {
+  display: inline-flex;
+  gap: 4px;
   border: 1px solid var(--line);
   border-radius: 8px;
-  padding: 8px 11px;
+  padding: 4px;
   background: rgba(255, 255, 255, 0.74);
+}
+
+.company-tab {
+  min-height: 38px;
+  border: 1px solid transparent;
+  border-radius: 7px;
+  padding: 8px 16px;
+  background: transparent;
   color: var(--ink-soft);
+  cursor: pointer;
   font-family: var(--mono);
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 900;
+}
+
+.company-tab:hover,
+.company-tab.is-active {
+  border-color: rgba(0, 169, 154, 0.58);
+  background: #102022;
+  color: #f9fff9;
+}
+
+.company-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.company-control {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.8);
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.company-control::before {
+  width: 10px;
+  height: 10px;
+  border: solid currentColor;
+  border-width: 0 2px 2px 0;
+  content: "";
+}
+
+.company-control:hover {
+  border-color: rgba(0, 169, 154, 0.72);
+  background: rgba(0, 169, 154, 0.12);
+  color: var(--teal-dark);
+}
+
+.company-control-prev::before {
+  transform: translateX(2px) rotate(135deg);
+}
+
+.company-control-next::before {
+  transform: translateX(-2px) rotate(-45deg);
+}
+
+.company-viewport {
+  min-width: 0;
+}
+
+.company-track {
+  display: flex;
+  gap: 12px;
+  min-width: 0;
+  overflow-x: auto;
+  padding: 2px 0 8px;
+  scroll-behavior: smooth;
+  scroll-padding: 1px;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+
+.company-track::-webkit-scrollbar {
+  display: none;
+}
+
+.company-track[hidden] {
+  display: none;
+}
+
+.company-card {
+  display: grid;
+  align-content: start;
+  gap: 10px;
+  flex: 0 0 min(260px, calc((100% - 36px) / 4));
+  min-height: 196px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.86);
+  scroll-snap-align: start;
+  transition:
+    transform 160ms ease,
+    border-color 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.company-track[data-company-track="employment"] .company-card {
+  flex-basis: min(360px, calc((100% - 12px) / 2));
+}
+
+.company-card:hover {
+  border-color: rgba(0, 169, 154, 0.6);
+  box-shadow: 0 16px 40px rgba(16, 22, 25, 0.1);
+  transform: translateY(-2px);
+}
+
+.company-type {
+  justify-self: start;
+  border: 1px solid rgba(0, 169, 154, 0.34);
+  border-radius: 999px;
+  padding: 3px 8px;
+  background: rgba(0, 169, 154, 0.1);
+  color: var(--teal-dark);
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.company-logo-frame {
+  display: grid;
+  place-items: center;
+  height: 70px;
+  border: 1px solid rgba(202, 215, 208, 0.8);
+  border-radius: 8px;
+  padding: 12px;
+  background: #fff;
+}
+
+.company-logo-frame img {
+  max-width: 100%;
+  max-height: 46px;
+  object-fit: contain;
+}
+
+.company-card h3 {
+  margin: 0;
+  font-family: var(--display);
+  font-size: 22px;
+  line-height: 1.18;
+}
+
+.company-card p {
+  margin: 0;
+  color: var(--ink-soft);
 }
 
 .camp-section {
@@ -1107,6 +1263,11 @@ button {
     grid-template-columns: 1fr;
   }
 
+  .company-card,
+  .company-track[data-company-track="employment"] .company-card {
+    flex-basis: min(280px, calc((100% - 12px) / 2));
+  }
+
   .track-tabs {
     grid-template-columns: 1fr;
   }
@@ -1193,6 +1354,39 @@ button {
   .selection-grid article,
   .apply-section {
     padding: 20px;
+  }
+
+  .company-showcase-head {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .company-tabs {
+    width: 100%;
+  }
+
+  .company-tab {
+    flex: 1;
+  }
+
+  .company-controls {
+    justify-content: flex-end;
+  }
+
+  .company-control {
+    width: 36px;
+    height: 36px;
+  }
+
+  .company-control::before {
+    width: 9px;
+    height: 9px;
+  }
+
+  .company-card,
+  .company-track[data-company-track="employment"] .company-card {
+    flex-basis: min(280px, 86vw);
+    min-height: 188px;
   }
 
   .carousel-thumbs,

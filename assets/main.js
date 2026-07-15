@@ -148,6 +148,7 @@
   const copyButton = document.querySelector("[data-copy-title]");
   const copyStatus = document.querySelector(".copy-status");
   const carousel = document.querySelector("[data-carousel]");
+  const companyCarousel = document.querySelector("[data-company-carousel]");
   const heroSceneRoot = document.querySelector("[data-hero-scene]");
   const reduceMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
   const THREE_MODULE_URL = "https://cdn.jsdelivr.net/npm/three@0.165.0/build/three.module.js";
@@ -412,6 +413,120 @@
     startAuto();
   }
 
+  function initCompanyCarousel(root) {
+    if (!root) return;
+
+    const tabs = Array.from(root.querySelectorAll("[data-company-tab]"));
+    const tracks = Array.from(root.querySelectorAll("[data-company-track]"));
+    const prev = root.querySelector("[data-company-prev]");
+    const next = root.querySelector("[data-company-next]");
+    const reduceMotion = reduceMotionQuery.matches;
+    let activeKey = tabs.find((tab) => tab.classList.contains("is-active"))?.dataset.companyTab || tabs[0]?.dataset.companyTab;
+    let timer = 0;
+
+    function getTrack(key = activeKey) {
+      return tracks.find((track) => track.dataset.companyTrack === key);
+    }
+
+    function getCards(track = getTrack()) {
+      return track ? Array.from(track.querySelectorAll(".company-card")) : [];
+    }
+
+    function getCurrentIndex(track, cards) {
+      if (!track || !cards.length) return 0;
+      const base = cards[0].offsetLeft;
+      const positions = cards.map((card) => Math.abs(card.offsetLeft - base - track.scrollLeft));
+      return positions.indexOf(Math.min(...positions));
+    }
+
+    function scrollToIndex(index, behavior = "smooth") {
+      const track = getTrack();
+      const cards = getCards(track);
+      if (!track || !cards.length) return;
+
+      const nextIndex = (index + cards.length) % cards.length;
+      const left = cards[nextIndex].offsetLeft - cards[0].offsetLeft;
+      track.scrollTo({
+        left,
+        behavior: reduceMotion ? "auto" : behavior
+      });
+    }
+
+    function animateTrack(track) {
+      if (!window.anime || reduceMotion || !track) return;
+      const cards = getCards(track);
+      window.anime.remove(cards);
+      window.anime({
+        targets: cards,
+        opacity: [0, 1],
+        translateY: [12, 0],
+        delay: window.anime.stagger(55),
+        duration: 420,
+        easing: "easeOutCubic"
+      });
+    }
+
+    function setActive(key) {
+      activeKey = key;
+      tabs.forEach((tab) => {
+        const isActive = tab.dataset.companyTab === key;
+        tab.classList.toggle("is-active", isActive);
+        tab.setAttribute("aria-selected", String(isActive));
+      });
+      tracks.forEach((track) => {
+        const isActive = track.dataset.companyTrack === key;
+        track.hidden = !isActive;
+        track.classList.toggle("is-active", isActive);
+        if (isActive) {
+          track.scrollTo({ left: 0, behavior: "auto" });
+          animateTrack(track);
+        }
+      });
+    }
+
+    function move(step) {
+      const track = getTrack();
+      const cards = getCards(track);
+      if (!track || cards.length < 2) return;
+      scrollToIndex(getCurrentIndex(track, cards) + step);
+    }
+
+    function stopAuto() {
+      if (timer) {
+        window.clearInterval(timer);
+        timer = 0;
+      }
+    }
+
+    function startAuto() {
+      if (reduceMotion || timer) return;
+      timer = window.setInterval(() => move(1), 4400);
+    }
+
+    tabs.forEach((tab) => {
+      tab.addEventListener("click", () => {
+        stopAuto();
+        setActive(tab.dataset.companyTab);
+        startAuto();
+      });
+    });
+    prev?.addEventListener("click", () => {
+      stopAuto();
+      move(-1);
+    });
+    next?.addEventListener("click", () => {
+      stopAuto();
+      move(1);
+    });
+    root.addEventListener("mouseenter", stopAuto);
+    root.addEventListener("mouseleave", startAuto);
+    root.addEventListener("focusin", stopAuto);
+    root.addEventListener("focusout", startAuto);
+
+    setActive(activeKey);
+    startAuto();
+  }
+
   function initPageMotion() {
     if (!window.anime || reduceMotionQuery.matches) return;
 
@@ -467,7 +582,7 @@
 
     const revealTargets = Array.from(
       document.querySelectorAll(
-        ".promise-card, .proof-panel, .camp-callout, .camp-card, .track-board, .roadmap li, .selection-grid article, .apply-section"
+        ".promise-card, .proof-panel, .company-showcase, .camp-callout, .camp-card, .track-board, .roadmap li, .selection-grid article, .apply-section"
       )
     );
 
@@ -848,6 +963,7 @@
 
   renderTrack("dev");
   initCarousel(carousel);
+  initCompanyCarousel(companyCarousel);
   initPageMotion();
   initRevealMotion();
   initHeroScene(heroSceneRoot);
