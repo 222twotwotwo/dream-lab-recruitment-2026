@@ -1121,6 +1121,53 @@ button {
   margin-bottom: 14px;
 }
 
+.sophomore-section {
+  display: grid;
+  gap: 18px;
+  border-top: 1px solid rgba(143, 165, 160, 0.34);
+  padding-top: 44px;
+}
+
+.sophomore-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.sophomore-grid article {
+  display: grid;
+  align-content: start;
+  gap: 10px;
+  min-height: 172px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.88);
+}
+
+.sophomore-grid span {
+  color: var(--teal-dark);
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.sophomore-grid h3 {
+  margin: 0;
+}
+
+.sophomore-grid p,
+.sophomore-note {
+  margin: 0;
+  color: var(--ink-soft);
+}
+
+.sophomore-note {
+  border-left: 4px solid var(--orange);
+  padding: 12px 16px;
+  background: rgba(255, 255, 255, 0.58);
+}
+
 .apply-section {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(310px, 430px);
@@ -1357,6 +1404,7 @@ button {
   .camp-callout,
   .camp-card,
   .track-panel,
+  .sophomore-grid article,
   .selection-grid article,
   .apply-section {
     padding: 20px;
@@ -1397,7 +1445,8 @@ button {
 
   .track-tabs,
   .track-detail-grid,
-  .selection-grid {
+  .selection-grid,
+  .sophomore-grid {
     grid-template-columns: 1fr;
   }
 

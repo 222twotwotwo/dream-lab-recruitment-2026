@@ -575,7 +575,7 @@
 
     const revealTargets = Array.from(
       document.querySelectorAll(
-        ".promise-card, .proof-panel, .company-showcase, .camp-callout, .camp-card, .track-board, .roadmap li, .selection-grid article, .apply-section"
+        ".promise-card, .proof-panel, .company-showcase, .camp-callout, .camp-card, .track-board, .roadmap li, .selection-grid article, .sophomore-section, .apply-section"
       )
     );
 
