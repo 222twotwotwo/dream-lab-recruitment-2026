@@ -32,7 +32,7 @@
       ]
     },
     media: {
-      title: "Digital Media 组",
+      title: "数媒组",
       tag: "DCC / Game Engine / AIGC / XR",
       logos: [
         { icon: "./assets/logos/cplusplus.svg", label: "C++" },
