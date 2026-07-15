@@ -520,6 +520,13 @@ button {
   gap: 14px;
 }
 
+.company-filter-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
 .company-tabs {
   display: inline-flex;
   gap: 4px;
@@ -547,6 +554,22 @@ button {
   border-color: rgba(0, 169, 154, 0.58);
   background: #102022;
   color: #f9fff9;
+}
+
+.company-year-tag {
+  display: inline-flex;
+  align-items: center;
+  min-height: 38px;
+  border: 1px solid rgba(0, 169, 154, 0.38);
+  border-radius: 999px;
+  padding: 0 14px;
+  background: rgba(255, 255, 255, 0.86);
+  color: #102022;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 900;
+  line-height: 1;
+  white-space: nowrap;
 }
 
 .company-controls {
@@ -1361,12 +1384,24 @@ button {
     flex-direction: column;
   }
 
-  .company-tabs {
+  .company-filter-row {
     width: 100%;
+  }
+
+  .company-tabs {
+    flex: 1;
+    min-width: 0;
   }
 
   .company-tab {
     flex: 1;
+    padding-right: 12px;
+    padding-left: 12px;
+  }
+
+  .company-year-tag {
+    min-height: 36px;
+    padding: 0 12px;
   }
 
   .company-controls {
