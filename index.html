@@ -371,13 +371,17 @@
               <button class="track-tab is-active" type="button" aria-pressed="true" aria-controls="track-panel" data-track="dev">
                 开发组
               </button>
-              <label class="track-select-label" for="dev-track-select">开发细分方向</label>
-              <select class="track-select" id="dev-track-select" data-dev-track-select aria-label="开发组细分方向">
-                <option value="frontend">前端</option>
-                <option value="backend">后端</option>
-                <option value="client">客户端</option>
-                <option value="media">数媒</option>
-              </select>
+              <div class="track-select-card">
+                <label class="track-select-label" for="dev-track-select">开发细分方向</label>
+                <div class="track-select-wrap">
+                  <select class="track-select" id="dev-track-select" data-dev-track-select aria-label="开发组细分方向">
+                    <option value="frontend">前端</option>
+                    <option value="backend">后端</option>
+                    <option value="client">客户端</option>
+                    <option value="media">数媒</option>
+                  </select>
+                </div>
+              </div>
             </div>
             <button class="track-tab" type="button" aria-pressed="false" aria-controls="track-panel" data-track="contest">
               竞赛组
