@@ -367,30 +367,18 @@
 
         <div class="track-board">
           <div class="track-tabs" aria-label="招新方向">
-            <div class="track-choice">
-              <button class="track-tab is-active" type="button" aria-expanded="true" aria-controls="track-summary-dev" data-track="dev">
-                开发组
-              </button>
-              <div class="track-summary" id="track-summary-dev" data-track-summary="dev"></div>
-            </div>
-            <div class="track-choice">
-              <button class="track-tab" type="button" aria-expanded="false" aria-controls="track-summary-media" data-track="media">
-                数媒组
-              </button>
-              <div class="track-summary" id="track-summary-media" data-track-summary="media" hidden></div>
-            </div>
-            <div class="track-choice">
-              <button class="track-tab" type="button" aria-expanded="false" aria-controls="track-summary-contest" data-track="contest">
-                竞赛组
-              </button>
-              <div class="track-summary" id="track-summary-contest" data-track-summary="contest" hidden></div>
-            </div>
-            <div class="track-choice">
-              <button class="track-tab" type="button" aria-expanded="false" aria-controls="track-summary-agent" data-track="agent">
-                Agent 组
-              </button>
-              <div class="track-summary" id="track-summary-agent" data-track-summary="agent" hidden></div>
-            </div>
+            <button class="track-tab is-active" type="button" aria-pressed="true" aria-controls="track-panel" data-track="dev">
+              开发组
+            </button>
+            <button class="track-tab" type="button" aria-pressed="false" aria-controls="track-panel" data-track="media">
+              数媒组
+            </button>
+            <button class="track-tab" type="button" aria-pressed="false" aria-controls="track-panel" data-track="contest">
+              竞赛组
+            </button>
+            <button class="track-tab" type="button" aria-pressed="false" aria-controls="track-panel" data-track="agent">
+              Agent 组
+            </button>
           </div>
           <article class="track-panel" id="track-panel" aria-live="polite"></article>
         </div>

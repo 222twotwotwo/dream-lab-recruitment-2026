@@ -382,7 +382,6 @@ button {
 .promise-card,
 .proof-panel,
 .track-panel,
-.track-summary,
 .selection-grid article {
   border: 1px solid var(--line);
   border-radius: 8px;
@@ -841,11 +840,6 @@ button {
   gap: 12px;
 }
 
-.track-choice {
-  display: grid;
-  gap: 10px;
-}
-
 .track-tab {
   width: 100%;
   min-height: 54px;
@@ -859,19 +853,6 @@ button {
   font-family: var(--display);
   font-size: 20px;
   font-weight: 900;
-}
-
-.track-summary {
-  padding: 18px 20px;
-}
-
-.track-summary[hidden] {
-  display: none;
-}
-
-.track-summary .track-detail-grid {
-  grid-template-columns: 1fr;
-  gap: 18px;
 }
 
 .track-tab:hover,
@@ -1263,7 +1244,6 @@ button {
   .camp-callout,
   .camp-card,
   .track-panel,
-  .track-summary,
   .selection-grid article,
   .apply-section {
     padding: 20px;

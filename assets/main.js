@@ -143,7 +143,6 @@
   const header = document.querySelector(".site-header");
   const navLinks = Array.from(document.querySelectorAll(".site-nav a"));
   const trackButtons = Array.from(document.querySelectorAll("[data-track]"));
-  const trackSummaries = Array.from(document.querySelectorAll("[data-track-summary]"));
   const trackPanel = document.querySelector("#track-panel");
   const copyButton = document.querySelector("[data-copy-title]");
   const copyStatus = document.querySelector(".copy-status");
@@ -160,10 +159,6 @@
       .replace(/>/g, "&gt;")
       .replace(/"/g, "&quot;")
       .replace(/'/g, "&#039;");
-  }
-
-  function isMovedTrackDetail(detail) {
-    return detail.title === "招募要求" || detail.title === "招募面向";
   }
 
   function renderTrackDetail(detail) {
@@ -204,33 +199,14 @@
     `;
   }
 
-  function renderTrackPanelDetails(details) {
-    const panelDetails = details.filter((detail) => !isMovedTrackDetail(detail));
-
-    return `
-      <div class="track-detail-grid">
-        ${panelDetails.map(renderTrackDetail).join("")}
-      </div>
-    `;
-  }
-
   function renderTrack(key) {
     const selectedKey = tracks[key] ? key : "dev";
     const track = tracks[selectedKey];
-    const movedDetails = track.details.filter(isMovedTrackDetail);
-    let activeSummary = null;
 
     trackButtons.forEach((button) => {
       const isActive = button.dataset.track === selectedKey;
       button.classList.toggle("is-active", isActive);
-      button.setAttribute("aria-expanded", String(isActive));
-    });
-
-    trackSummaries.forEach((summary) => {
-      const isActive = summary.dataset.trackSummary === selectedKey;
-      summary.hidden = !isActive;
-      summary.innerHTML = isActive ? renderTrackDetails(movedDetails) : "";
-      if (isActive) activeSummary = summary;
+      button.setAttribute("aria-pressed", String(isActive));
     });
 
     if (!trackPanel) return;
@@ -244,7 +220,7 @@
         <h3>${escapeHtml(track.title)}</h3>
         <p>${escapeHtml(track.intro)}</p>
       </header>
-      ${renderTrackPanelDetails(track.details)}
+      ${renderTrackDetails(track.details)}
     `;
 
     if (window.anime && !reduceMotionQuery.matches) {
@@ -257,16 +233,6 @@
         easing: "easeOutCubic"
       });
 
-      if (activeSummary) {
-        window.anime.remove(activeSummary);
-        window.anime({
-          targets: activeSummary,
-          opacity: [0, 1],
-          translateY: [-8, 0],
-          duration: 360,
-          easing: "easeOutCubic"
-        });
-      }
     }
   }
 
