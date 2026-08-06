@@ -88,16 +88,15 @@ button {
 .site-header {
   position: fixed;
   top: 0;
-  left: 50%;
+  left: 0;
   z-index: 30;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 20px;
-  width: min(1180px, calc(100% - 32px));
-  transform: translateX(-50%);
+  width: 100%;
   border-bottom: 1px solid rgba(244, 247, 242, 0.32);
-  padding: 14px 0;
+  padding: 14px 36px;
   color: #f9fff9;
 }
 
@@ -108,10 +107,10 @@ button {
 
 .site-header::before {
   position: absolute;
-  inset: 6px -12px;
+  inset: 0;
   z-index: -1;
   border: 1px solid transparent;
-  border-radius: 8px;
+  border-radius: 0 0 8px 8px;
   background: transparent;
   content: "";
   transition:
@@ -1297,6 +1296,8 @@ button {
   .site-header {
     align-items: flex-start;
     flex-direction: column;
+    gap: 10px;
+    padding: 12px 24px;
   }
 
   .hero h1 {
@@ -1336,8 +1337,8 @@ button {
   }
 
   .site-header {
-    width: min(100% - 24px, 1180px);
-    padding-top: 10px;
+    width: 100%;
+    padding: 10px 12px;
   }
 
   .brand {
