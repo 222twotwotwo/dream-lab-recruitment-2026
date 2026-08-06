@@ -168,7 +168,7 @@ button {
 .hero {
   position: relative;
   display: grid;
-  min-height: 86svh;
+  min-height: 100svh;
   overflow: hidden;
   background: #101619;
   color: #f9fff9;
@@ -274,6 +274,7 @@ button {
   align-items: center;
   justify-content: center;
   min-height: 46px;
+  min-width: 92px;
   border: 1px solid transparent;
   border-radius: 8px;
   padding: 10px 16px;
@@ -1358,7 +1359,7 @@ button {
   }
 
   .hero {
-    min-height: 86svh;
+    min-height: 100svh;
   }
 
   .hero-shade {
@@ -1381,9 +1382,9 @@ button {
     font-size: 16px;
   }
 
-  .hero-actions {
+  /* .hero-actions {
     display: grid;
-  }
+  } */
 
   .hero-metrics {
     margin-top: 22px;
