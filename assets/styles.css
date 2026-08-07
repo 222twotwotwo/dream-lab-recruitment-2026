@@ -13,6 +13,8 @@
   --violet: #6848f5;
   --gold: #d9a924;
   --shadow: 0 20px 56px rgba(16, 22, 25, 0.12);
+  /* 由 main.js 按 header 实测高度覆写，这里只是脚本未执行时的兜底值 */
+  --header-h: 63px;
   --display: "Bahnschrift", "Microsoft YaHei UI", "Microsoft YaHei", "Segoe UI", sans-serif;
   --body: "Segoe UI", "Microsoft YaHei", system-ui, sans-serif;
   --mono: "Cascadia Mono", "JetBrains Mono", Consolas, monospace;
@@ -25,7 +27,7 @@
 html {
   overflow-x: hidden;
   scroll-behavior: smooth;
-  scroll-padding-top: 112px;
+  scroll-padding-top: var(--header-h);
 }
 
 body {
@@ -88,16 +90,15 @@ button {
 .site-header {
   position: fixed;
   top: 0;
-  left: 50%;
+  left: 0;
   z-index: 30;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 20px;
-  width: min(1180px, calc(100% - 32px));
-  transform: translateX(-50%);
+  width: 100%;
   border-bottom: 1px solid rgba(244, 247, 242, 0.32);
-  padding: 14px 0;
+  padding: 14px 36px;
   color: #f9fff9;
 }
 
@@ -108,10 +109,10 @@ button {
 
 .site-header::before {
   position: absolute;
-  inset: 6px -12px;
+  inset: 0;
   z-index: -1;
   border: 1px solid transparent;
-  border-radius: 8px;
+  border-radius: 0 0 8px 8px;
   background: transparent;
   content: "";
   transition:
@@ -169,7 +170,7 @@ button {
 .hero {
   position: relative;
   display: grid;
-  min-height: 86svh;
+  min-height: 100svh;
   overflow: hidden;
   background: #101619;
   color: #f9fff9;
@@ -275,6 +276,7 @@ button {
   align-items: center;
   justify-content: center;
   min-height: 46px;
+  min-width: 92px;
   border: 1px solid transparent;
   border-radius: 8px;
   padding: 10px 16px;
@@ -342,11 +344,11 @@ button {
   width: min(1180px, calc(100% - 32px));
   margin: 0 auto;
   padding: 78px 0;
-  scroll-margin-top: 112px;
 }
 
 .section-heading {
   display: grid;
+  padding: 0 4px;
   gap: 10px;
   max-width: 780px;
   margin-bottom: 28px;
@@ -367,6 +369,17 @@ button {
   margin: 0;
   color: var(--ink-soft);
   font-size: 17px;
+}
+
+.apply-copy img{
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  z-index: 1;
+  max-width: 100%;
+  height: auto;
+  object-fit: contain;
+  max-height: 400px;
 }
 
 .promise-section {
@@ -1188,6 +1201,8 @@ button {
 
 .apply-copy {
   display: grid;
+  padding-top: 0;
+  align-self: start;
   gap: 12px;
 }
 
@@ -1297,6 +1312,8 @@ button {
   .site-header {
     align-items: flex-start;
     flex-direction: column;
+    gap: 10px;
+    padding: 12px 24px;
   }
 
   .hero h1 {
@@ -1328,6 +1345,13 @@ button {
   .track-tabs {
     grid-template-columns: 1fr;
   }
+
+  .apply-copy img {
+    transform: scaleX(-1);
+    max-height: 200px;
+    left: auto;
+    right:0;
+  }
 }
 
 @media (max-width: 700px) {
@@ -1336,8 +1360,8 @@ button {
   }
 
   .site-header {
-    width: min(100% - 24px, 1180px);
-    padding-top: 10px;
+    width: 100%;
+    padding: 10px 12px;
   }
 
   .brand {
@@ -1357,7 +1381,7 @@ button {
   }
 
   .hero {
-    min-height: 86svh;
+    min-height: 100svh;
   }
 
   .hero-shade {
@@ -1380,9 +1404,9 @@ button {
     font-size: 16px;
   }
 
-  .hero-actions {
+  /* .hero-actions {
     display: grid;
-  }
+  } */
 
   .hero-metrics {
     margin-top: 22px;
@@ -1395,7 +1419,6 @@ button {
   .section {
     width: min(100% - 24px, 1180px);
     padding: 58px 0;
-    scroll-margin-top: 132px;
   }
 
   .section-heading h2,
