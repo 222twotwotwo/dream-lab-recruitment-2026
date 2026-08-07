@@ -196,7 +196,7 @@
   const navLinks = Array.from(document.querySelectorAll(".site-nav a"));
   const trackButtons = Array.from(document.querySelectorAll("[data-track]"));
   const trackPanel = document.querySelector("#track-panel");
-  const copyButton = document.querySelector("[data-copy-title]");
+  // const copyButton = document.querySelector("[data-copy-title]");
   const copyStatus = document.querySelector(".copy-status");
   const carousel = document.querySelector("[data-carousel]");
   const companyCarousel = document.querySelector("[data-company-carousel]");
@@ -350,15 +350,15 @@
     syncActive();
   }
 
-  async function copyRecruitTitle() {
-    const title = "【实验室招新】【系统培养】逐梦创新实验室2026秋季招新前瞻";
-    try {
-      await navigator.clipboard.writeText(title);
-      if (copyStatus) copyStatus.textContent = "已复制招新标题。";
-    } catch (error) {
-      if (copyStatus) copyStatus.textContent = title;
-    }
-  }
+  // async function copyRecruitTitle() {
+  //   const title = "【实验室招新】【系统培养】逐梦创新实验室2026秋季招新前瞻";
+  //   try {
+  //     await navigator.clipboard.writeText(title);
+  //     if (copyStatus) copyStatus.textContent = "已复制招新标题。";
+  //   } catch (error) {
+  //     if (copyStatus) copyStatus.textContent = title;
+  //   }
+  // }
 
   function initCarousel(root) {
     if (!root) return;
@@ -968,7 +968,7 @@
   }
 
   window.addEventListener("scroll", updateHeader, { passive: true });
-  copyButton?.addEventListener("click", copyRecruitTitle);
+  // copyButton?.addEventListener("click", copyRecruitTitle);
 
   renderTrack("frontend");
   initCarousel(carousel);

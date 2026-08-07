@@ -348,6 +348,7 @@ button {
 
 .section-heading {
   display: grid;
+  padding: 0 4px;
   gap: 10px;
   max-width: 780px;
   margin-bottom: 28px;
@@ -1189,6 +1190,8 @@ button {
 
 .apply-copy {
   display: grid;
+  padding-top: 0;
+  align-self: start;
   gap: 12px;
 }
 
