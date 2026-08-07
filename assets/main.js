@@ -306,27 +306,48 @@
       .map((link) => document.querySelector(link.getAttribute("href")))
       .filter(Boolean);
 
-    if (!("IntersectionObserver" in window) || !sections.length) return;
+    if (!sections.length) return;
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visible = entries
-          .filter((entry) => entry.isIntersecting)
-          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+    let queued = false;
 
-        if (!visible) return;
+    function syncActive() {
+      queued = false;
 
-        navLinks.forEach((link) => {
-          link.classList.toggle("is-active", link.getAttribute("href") === `#${visible.target.id}`);
-        });
-      },
-      {
-        rootMargin: "-25% 0px -60% 0px",
-        threshold: [0.1, 0.4, 0.7]
+      // 锚线取 header 下沿：section 顶边滚到 header 底部时即视为当前区块
+      const line = header?.offsetHeight ?? 0;
+
+      let current = null;
+      for (const section of sections) {
+        const { top, bottom } = section.getBoundingClientRect();
+        if (top <= line && bottom > line) {
+          current = section;
+          break;
+        }
+        if (top <= line) current = section;
       }
-    );
 
-    sections.forEach((section) => observer.observe(section));
+      // 末尾 section 可能矮于锚线到视口底部的距离，滚到底时兜底高亮最后一项
+      const atBottom =
+        window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2;
+      if (atBottom) current = sections[sections.length - 1];
+
+      navLinks.forEach((link) => {
+        link.classList.toggle(
+          "is-active",
+          Boolean(current) && link.getAttribute("href") === `#${current.id}`
+        );
+      });
+    }
+
+    function onScroll() {
+      if (queued) return;
+      queued = true;
+      window.requestAnimationFrame(syncActive);
+    }
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll, { passive: true });
+    syncActive();
   }
 
   async function copyRecruitTitle() {

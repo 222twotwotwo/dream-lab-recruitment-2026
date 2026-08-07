@@ -13,6 +13,8 @@
   --violet: #6848f5;
   --gold: #d9a924;
   --shadow: 0 20px 56px rgba(16, 22, 25, 0.12);
+  /* 由 main.js 按 header 实测高度覆写，这里只是脚本未执行时的兜底值 */
+  --header-h: 63px;
   --display: "Bahnschrift", "Microsoft YaHei UI", "Microsoft YaHei", "Segoe UI", sans-serif;
   --body: "Segoe UI", "Microsoft YaHei", system-ui, sans-serif;
   --mono: "Cascadia Mono", "JetBrains Mono", Consolas, monospace;
@@ -25,7 +27,7 @@
 html {
   overflow-x: hidden;
   scroll-behavior: smooth;
-  scroll-padding-top: 112px;
+  scroll-padding-top: var(--header-h);
 }
 
 body {
@@ -342,7 +344,6 @@ button {
   width: min(1180px, calc(100% - 32px));
   margin: 0 auto;
   padding: 78px 0;
-  scroll-margin-top: 112px;
 }
 
 .section-heading {
@@ -1397,7 +1398,6 @@ button {
   .section {
     width: min(100% - 24px, 1180px);
     padding: 58px 0;
-    scroll-margin-top: 132px;
   }
 
   .section-heading h2,
