@@ -201,9 +201,34 @@
   const carousel = document.querySelector("[data-carousel]");
   const companyCarousel = document.querySelector("[data-company-carousel]");
   const heroSceneRoot = document.querySelector("[data-hero-scene]");
+  const hero = document.querySelector(".hero");
+  const heroTitle = document.querySelector("#hero-title");
+  const heroLead = document.querySelector(".hero-lead");
+  const heroMedia = document.querySelector(".hero-media");
   const reduceMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
   const THREE_MODULE_URL = "https://cdn.jsdelivr.net/npm/three@0.165.0/build/three.module.js";
   const devTrackKeys = ["frontend", "backend", "client", "media"];
+
+  // Keep the easter egg declarative so adding another trigger does not require
+  // duplicating URL parsing or DOM update logic.
+  const easterEgg = {
+    hashes: new Set(["otto", "♿", "♿️"]),
+    title: ["滚木创新实验室", "2026 :// Project</404>"],
+    lead: "冲刺，冲刺，冲，冲，冲♿️",
+    media: {
+      src: "./assets/GunMu.png",
+      alt: "滚木照片组成的彩蛋招新视觉"
+    }
+  };
+  const defaultHeroTitle = heroTitle
+    ? Array.from(heroTitle.childNodes)
+        .filter((node) => node.nodeType === Node.TEXT_NODE)
+        .map((node) => node.textContent.trim())
+    : [];
+  const defaultHeroLead = heroLead?.textContent.trim() ?? "";
+  const defaultHeroMedia = heroMedia
+    ? { src: heroMedia.getAttribute("src") ?? "", alt: heroMedia.getAttribute("alt") ?? "" }
+    : { src: "", alt: "" };
 
   function escapeHtml(value) {
     return String(value)
@@ -348,6 +373,37 @@
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onScroll, { passive: true });
     syncActive();
+  }
+
+  function getNormalizedHash() {
+    const rawHash = window.location.hash.replace(/^#/, "");
+    try {
+      return decodeURIComponent(rawHash).trim().toLocaleLowerCase();
+    } catch {
+      // A malformed percent escape should behave like an unrelated hash.
+      return rawHash.trim().toLocaleLowerCase();
+    }
+  }
+
+  function setHeroTitle(lines) {
+    if (!heroTitle || lines.length < 2) return;
+    heroTitle.replaceChildren(
+      document.createTextNode(lines[0]),
+      document.createElement("br"),
+      document.createTextNode(lines[1])
+    );
+  }
+
+  function applyEasterEggState() {
+    const isActive = easterEgg.hashes.has(getNormalizedHash());
+
+    setHeroTitle(isActive ? easterEgg.title : defaultHeroTitle);
+    if (heroLead) heroLead.textContent = isActive ? easterEgg.lead : defaultHeroLead;
+    if (heroMedia) {
+      heroMedia.src = isActive ? easterEgg.media.src : defaultHeroMedia.src;
+      heroMedia.alt = isActive ? easterEgg.media.alt : defaultHeroMedia.alt;
+    }
+    hero?.classList.toggle("is-easter-egg", isActive);
   }
 
   // async function copyRecruitTitle() {
@@ -978,4 +1034,6 @@
   initHeroScene(heroSceneRoot);
   updateHeader();
   observeSections();
+  window.addEventListener("hashchange", applyEasterEggState);
+  applyEasterEggState();
 })();
