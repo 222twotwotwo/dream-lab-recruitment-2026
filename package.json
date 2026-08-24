@@ -1,0 +1,24 @@
+{
+  "name": "dream-lab-recruitment-2026",
+  "private": true,
+  "version": "2.0.0",
+  "type": "module",
+  "packageManager": "bun@1.4.1",
+  "scripts": {
+    "dev": "vite",
+    "build": "vue-tsc -b && vite build",
+    "preview": "vite preview",
+    "typecheck": "vue-tsc -b"
+  },
+  "dependencies": {
+    "three": "^0.185.1",
+    "vue": "3.6.0-rc.5"
+  },
+  "devDependencies": {
+    "@types/three": "^0.185.4",
+    "@vitejs/plugin-vue": "^6.0.8",
+    "typescript": "^5.9",
+    "vite": "^8.2.2",
+    "vue-tsc": "^3.3.11"
+  }
+}
