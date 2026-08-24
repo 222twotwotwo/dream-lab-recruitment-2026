@@ -1,13 +1,14 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref } from "vue";
+import { onMounted, onUnmounted, ref, useTemplateRef } from "vue";
 import { campSlides, eventStrip } from "../data/content";
-import { EASE_OUT_CUBIC, EASE_OUT_QUART, prefersReducedMotion } from "../motion";
+import { animate, prefersReducedMotion } from "../motion";
 
 /**
  * 训练营照片轮播：自动播放、悬停/聚焦暂停、键盘方向键、缩略图切换。
  */
-const AUTO_INTERVAL = 5200;
+const AUTO_INTERVAL = 2500;
 const activeIndex = ref(0);
+const trackRef = useTemplateRef<HTMLDivElement>("track");
 const rootRef = ref<HTMLElement | null>(null);
 let timer = 0;
 
@@ -17,21 +18,18 @@ function setActive(index: number): void {
   const count = campSlides.length;
   activeIndex.value = ((index % count) + count) % count;
 
-  if (reduceMotion || !rootRef.value) return;
-  const slide = rootRef.value.querySelectorAll<HTMLElement>(".camp-slide")[activeIndex.value];
-  const image = slide?.querySelector("img");
-  if (!slide) return;
-  slide.animate(
-    [
-      { opacity: "0", transform: "scale(1.012)" },
-      { opacity: "1", transform: "scale(1)" },
-    ],
-    { duration: 520, easing: EASE_OUT_CUBIC },
-  );
-  image?.animate(
-    [{ transform: "scale(1.045)" }, { transform: "scale(1)" }],
-    { duration: 900, easing: EASE_OUT_QUART },
-  );
+  const track = trackRef.value;
+  if (!track) return;
+  // 横向滚动切换：轨道平移一个视口宽
+  if (reduceMotion) {
+    track.style.transform = `translateX(${-activeIndex.value * 100}%)`;
+    return;
+  }
+  animate(track, {
+    x: `${-activeIndex.value * 100}%`,
+    duration: 620,
+    ease: "outCubic",
+  });
 }
 
 function move(step: number): void {
@@ -50,9 +48,30 @@ function startAuto(): void {
   timer = window.setInterval(() => move(1), AUTO_INTERVAL);
 }
 
+// 手动切换后暂停，5 秒无操作自动恢复轮播
+let resumeTimer = 0;
+let hovered = false;
+
+function clearResume(): void {
+  if (resumeTimer) {
+    window.clearTimeout(resumeTimer);
+    resumeTimer = 0;
+  }
+}
+
+function scheduleResume(): void {
+  clearResume();
+  if (reduceMotion) return;
+  resumeTimer = window.setTimeout(() => {
+    resumeTimer = 0;
+    if (!hovered) startAuto();
+  }, 5000);
+}
+
 function onThumbClick(index: number): void {
   stopAuto();
   setActive(index);
+  scheduleResume();
 }
 
 function onKeydown(event: KeyboardEvent): void {
@@ -60,12 +79,25 @@ function onKeydown(event: KeyboardEvent): void {
     event.preventDefault();
     stopAuto();
     move(-1);
+    scheduleResume();
   }
   if (event.key === "ArrowRight") {
     event.preventDefault();
     stopAuto();
     move(1);
+    scheduleResume();
   }
+}
+
+function onMouseEnter(): void {
+  hovered = true;
+  stopAuto();
+}
+
+function onMouseLeave(): void {
+  hovered = false;
+  clearResume();
+  startAuto();
 }
 
 onMounted(() => {
@@ -73,13 +105,18 @@ onMounted(() => {
   if (!root) return;
   setActive(0);
   startAuto();
-  root.addEventListener("mouseenter", stopAuto);
-  root.addEventListener("mouseleave", startAuto);
+  root.addEventListener("mouseenter", onMouseEnter);
+  root.addEventListener("mouseleave", onMouseLeave);
   root.addEventListener("focusin", stopAuto);
-  root.addEventListener("focusout", startAuto);
+  root.addEventListener("focusout", () => {
+    if (!hovered) startAuto();
+  });
 });
 
-onUnmounted(stopAuto);
+onUnmounted(() => {
+  stopAuto();
+  clearResume();
+});
 
 const slides = campSlides;
 const thumbLabel = (index: number): string => `查看 ${slides[index]!.alt}`;
@@ -97,16 +134,18 @@ const thumbLabel = (index: number): string => `查看 ${slides[index]!.alt}`;
         tabindex="0"
         @keydown="onKeydown"
       >
-        <figure
-          v-for="(slide, index) in slides"
-          :key="slide.src"
-          class="camp-slide"
-          :class="{ 'is-active': index === activeIndex }"
-          :aria-hidden="index === activeIndex ? undefined : 'true'"
-        >
-          <img :src="slide.src" :alt="slide.alt" width="2275" height="1279" loading="lazy" />
-          <figcaption>{{ slide.caption }}</figcaption>
-        </figure>
+        <div ref="track" class="camp-track">
+          <figure
+            v-for="(slide, index) in slides"
+            :key="slide.src"
+            class="camp-slide"
+            :class="{ 'is-active': index === activeIndex }"
+            :aria-hidden="index === activeIndex ? undefined : 'true'"
+          >
+            <img :src="slide.src" :alt="slide.alt" width="2275" height="1279" loading="lazy" />
+            <figcaption>{{ slide.caption }}</figcaption>
+          </figure>
+        </div>
         <button class="carousel-control carousel-control-prev" type="button" aria-label="上一张" title="上一张" @click="onThumbClick(activeIndex - 1)"></button>
         <button class="carousel-control carousel-control-next" type="button" aria-label="下一张" title="下一张" @click="onThumbClick(activeIndex + 1)"></button>
       </div>

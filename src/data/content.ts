@@ -294,7 +294,11 @@ export const navLinks = [
 /** 英雄区默认与彩蛋状态（#otto / #♿ 触发） */
 export const heroDefaults = {
   title: ["逐梦创新实验室", "2026级新生招募计划"],
-  lead: "不限校区，不限专业，零基础可报",
+  brief: [
+    "不限校区：官渡 / 光华 / 西城同步招新",
+    "零基础可报：军训后开设线下指导班带你入门",
+  ],
+  note: "军训后开设线下指导班，零基础也能跨过入门门槛",
   media: {
     src: "./assets/dream-lab-hero.png",
     alt: "实验室桌面、白板系统图、代码终端和竞赛奖杯组成的招新视觉",
@@ -308,7 +312,7 @@ export const easterEgg = {
     "♿️": true,
   } as Record<string, true>,
   title: ["滚木创新实验室", "2026 :// Project</404>"],
-  lead: "冲刺，冲刺，冲，冲，冲♿️",
+  brief: ["冲刺，冲刺，冲，冲，冲♿️"],
   media: {
     src: "./assets/GunMu.png",
     alt: "滚木照片组成的彩蛋招新视觉",

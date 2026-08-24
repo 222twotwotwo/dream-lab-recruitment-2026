@@ -1,11 +1,13 @@
 <script setup lang="ts">
+import { animate, createTimeline } from "animejs";
 import { onMounted, onUnmounted, ref } from "vue";
 import { easterEgg, heroDefaults } from "../data/content";
-import { EASE_OUT_EXPO, fadeInUp, prefersReducedMotion } from "../motion";
+import { prefersReducedMotion } from "../motion";
 import HeroScene from "./HeroScene.vue";
 
 const title = ref(heroDefaults.title);
-const lead = ref(heroDefaults.lead);
+const brief = ref(heroDefaults.brief);
+const note = ref(heroDefaults.note);
 const media = ref(heroDefaults.media);
 
 function getNormalizedHash(): string {
@@ -21,13 +23,10 @@ function getNormalizedHash(): string {
 function applyEasterEggState(): void {
   const isActive = easterEgg.hashes[getNormalizedHash()] === true;
   title.value = isActive ? easterEgg.title : heroDefaults.title;
-  lead.value = isActive ? easterEgg.lead : heroDefaults.lead;
+  brief.value = isActive ? easterEgg.brief : heroDefaults.brief;
+  note.value = isActive ? "" : heroDefaults.note;
   media.value = isActive ? easterEgg.media : heroDefaults.media;
 }
-
-// 原版入场时间轴的错峰延迟（anime timeline 的重叠换算）
-const INTRO_DELAYS = [0, 260, 640] as const;
-const actionDelays = [980, 1090] as const;
 
 onMounted(() => {
   window.addEventListener("hashchange", applyEasterEggState);
@@ -37,15 +36,29 @@ onMounted(() => {
 
   const root = rootRef.value;
   if (!root) return;
-  const kicker = root.querySelector<HTMLElement>(".hero-kicker");
-  if (kicker) fadeInUp(kicker, { duration: 620, distance: 18 });
+
+  // anime.js 时间轴：标题左下、信息组右下错峰入场
+  const timeline = createTimeline({ defaults: { ease: "outExpo" } });
   const heading = root.querySelector<HTMLElement>(".hero h1");
-  if (heading) fadeInUp(heading, { duration: 900, distance: 32, delay: INTRO_DELAYS[1], easing: EASE_OUT_EXPO });
-  const leadEl = root.querySelector<HTMLElement>(".hero-lead");
-  if (leadEl) fadeInUp(leadEl, { duration: 760, distance: 24, delay: INTRO_DELAYS[2] });
-  root.querySelectorAll<HTMLElement>(".hero-actions, .hero-metrics").forEach((el, index) => {
-    fadeInUp(el, { duration: 700, distance: 20, delay: actionDelays[index] ?? 980 });
-  });
+  if (heading) {
+    timeline.add(heading, { opacity: [0, 1], translateY: [32, 0], duration: 900 }, 120);
+  }
+  const panel = root.querySelector<HTMLElement>(".hero-panel");
+  if (panel) {
+    timeline.add(panel, { opacity: [0, 1], translateY: [24, 0], duration: 760 }, 520);
+  }
+
+  // 主按钮“垂涎欲滴”：轻微呼吸脉冲（与 hover 扫光叠加）
+  const cta = root.querySelector<HTMLElement>(".button-primary");
+  if (cta) {
+    animate(cta, {
+      scale: [1, 1.045],
+      duration: 1100,
+      ease: "inOutQuad",
+      alternate: true,
+      loop: true,
+    });
+  }
 });
 
 onUnmounted(() => {
@@ -69,11 +82,18 @@ const rootRef = ref<HTMLElement | null>(null);
     </div>
     <div class="hero-shade" aria-hidden="true"></div>
     <div class="hero-content">
-      <h1 id="hero-title">{{ title[0] }}<br />{{ title[1] }}</h1>
-      <p class="hero-lead">{{ lead }}</p>
-      <div class="hero-actions" aria-label="主要行动">
-        <a class="button button-primary" href="#apply">报名方式</a>
-        <a class="button button-ghost" href="#tracks">选择方向</a>
+      <div class="hero-title-group">
+        <h1 id="hero-title">{{ title[0] }}<br />{{ title[1] }}</h1>
+      </div>
+      <div class="hero-panel">
+        <p class="hero-brief">
+          <span v-for="line in brief" :key="line">{{ line }}</span>
+        </p>
+        <div class="hero-actions" aria-label="主要行动">
+          <a class="button button-primary" href="#apply">点击报名</a>
+          <a class="button button-ghost" href="#tracks">选择方向</a>
+        </div>
+        <p v-if="note" class="hero-note">{{ note }}</p>
       </div>
     </div>
   </section>

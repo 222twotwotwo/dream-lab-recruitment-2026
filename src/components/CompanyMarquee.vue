@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted, useTemplateRef } from "vue";
 import { companies } from "../data/content";
-import { fadeInUp, prefersReducedMotion } from "../motion";
+import { animate, prefersReducedMotion, stagger } from "../motion";
 
 /**
  * 实习就业去向横向跑马灯。
@@ -76,9 +76,16 @@ onMounted(() => {
   track.scrollTo({ left: 0, behavior: "auto" });
 
   // 与原版一致：入场动画只作用于原始卡片组
-  track.querySelectorAll<HTMLElement>(".company-card").forEach((card, index) => {
-    if (index >= cardCount()) return;
-    fadeInUp(card, { duration: 420, distance: 12, delay: index * 55 });
+  const originals = [...track.querySelectorAll<HTMLElement>(".company-card")].slice(
+    0,
+    cardCount(),
+  );
+  animate(originals, {
+    opacity: [0, 1],
+    translateY: [12, 0],
+    delay: stagger(55),
+    duration: 420,
+    ease: "outCubic",
   });
 
   startAuto();
