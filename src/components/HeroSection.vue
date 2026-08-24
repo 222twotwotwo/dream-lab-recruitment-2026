@@ -1,8 +1,7 @@
 <script setup lang="ts">
-import { animate, createTimeline } from "animejs";
 import { onMounted, onUnmounted, ref } from "vue";
 import { easterEgg, heroDefaults } from "../data/content";
-import { prefersReducedMotion } from "../motion";
+import { playHeroIntro, pulseCta } from "../anime";
 import HeroScene from "./HeroScene.vue";
 
 const title = ref(heroDefaults.title);
@@ -32,33 +31,14 @@ onMounted(() => {
   window.addEventListener("hashchange", applyEasterEggState);
   applyEasterEggState();
 
-  if (prefersReducedMotion.matches) return;
-
   const root = rootRef.value;
   if (!root) return;
 
-  // anime.js 时间轴：标题左下、信息组右下错峰入场
-  const timeline = createTimeline({ defaults: { ease: "outExpo" } });
-  const heading = root.querySelector<HTMLElement>(".hero h1");
-  if (heading) {
-    timeline.add(heading, { opacity: [0, 1], translateY: [32, 0], duration: 900 }, 120);
-  }
-  const panel = root.querySelector<HTMLElement>(".hero-panel");
-  if (panel) {
-    timeline.add(panel, { opacity: [0, 1], translateY: [24, 0], duration: 760 }, 520);
-  }
+  playHeroIntro(root);
 
-  // 主按钮“垂涎欲滴”：轻微呼吸脉冲（与 hover 扫光叠加）
+  // 主按钮“垂涎欲滴”：呼吸脉冲（与 hover 扫光叠加）
   const cta = root.querySelector<HTMLElement>(".button-primary");
-  if (cta) {
-    animate(cta, {
-      scale: [1, 1.045],
-      duration: 1100,
-      ease: "inOutQuad",
-      alternate: true,
-      loop: true,
-    });
-  }
+  if (cta) pulseCta(cta);
 });
 
 onUnmounted(() => {

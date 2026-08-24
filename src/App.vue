@@ -11,7 +11,7 @@ import SelectionSection from "./components/SelectionSection.vue";
 import SophomoreSection from "./components/SophomoreSection.vue";
 import ApplySection from "./components/ApplySection.vue";
 import SiteFooter from "./components/SiteFooter.vue";
-import { observeReveals } from "./motion";
+import { observeReveals } from "./anime";
 
 // 与原版一致的滚动显现目标集合
 const REVEAL_SELECTOR = [

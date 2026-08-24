@@ -119,10 +119,28 @@ button {
   display: inline-flex;
   align-items: center;
   min-width: 0;
-  font-family: var(--display);
   font-size: 17px;
   font-weight: 900;
   white-space: nowrap;
+}
+
+.brand-stack {
+  position: relative;
+  display: inline-block;
+}
+
+/* 未悬浮：艺术字；随浮起交叉淡入常规字体 */
+.brand-normal {
+  opacity: calc(var(--header-float, 0));
+}
+
+.brand-art {
+  position: absolute;
+  inset: 0;
+  font-family: "ZCOOL QingKe HuangYou", var(--display);
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  opacity: calc(1 - var(--header-float, 0));
 }
 
 .site-nav {
@@ -228,17 +246,24 @@ button {
 }
 
 .hero-content {
+  /* 原语1 贴靠：容器居中、两侧最少 24px，面板右缘即容器右缘，永不为 0px */
+  width: min(1180px, calc(100% - 48px));
+  margin-inline: auto;
+  /* 原语2 尺寸标尺（唯一来源） */
+  --hero-title-size: clamp(40px, 5.4vw, 76px);
+  --hero-btn-h: clamp(44px, 3.9vw, 56px);
+  --hero-btn-fs: clamp(14px, 1.2vw, 17px);
+  --hero-gap: clamp(24px, 3.4vw, 48px);
   position: relative;
   z-index: 3;
   display: grid;
-  grid-template-columns: minmax(0, 1.1fr) minmax(340px, 560px);
+  grid-template-columns: minmax(0, 1fr) min(46vw, 500px);
   align-items: end;
-  align-content: end;
-  gap: 36px;
-  width: min(1180px, calc(100% - 32px));
-  margin: 0 auto;
+  align-content: end; /* 原语3 底部锚定 */
+  gap: var(--hero-gap);
   padding: 132px 0 72px;
 }
+
 
 .hero-title-group {
   min-width: 0;
@@ -255,8 +280,8 @@ button {
   margin: 0;
   display: grid;
   gap: 4px;
-  color: #EFE3D2;
-  font-size: 15px;
+  color: #F5EADB;
+  font-size: 16px;
   line-height: 1.7;
 }
 
@@ -288,25 +313,26 @@ button {
   max-width: 820px;
   margin: 16px 0 18px;
   font-family: "ZCOOL QingKe HuangYou", var(--display);
-  font-size: 68px;
+  font-size: var(--hero-title-size);
   font-weight: 400;
-  line-height: 1.08;
+  line-height: 1.12;
   letter-spacing: 0.01em;
   text-wrap: balance;
   /* 艺术字：马卡龙渐变文字 + 柔光描影 */
   background: linear-gradient(
     105deg,
-    #FFF6EA 6%,
-    #F2A0B0 34%,
-    #C9B4E8 60%,
-    #C6D9AC 84%,
-    #F3DFA0 98%
+    #FFFFFF 4%,
+    #F6B4C0 30%,
+    #D4BCEE 56%,
+    #B9D19A 80%,
+    #F0D488 98%
   );
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
-  filter: drop-shadow(0 4px 18px rgba(30, 22, 34, 0.6))
-    drop-shadow(0 0 42px rgba(242, 160, 176, 0.18));
+  filter: drop-shadow(0 3px 0 rgba(58, 46, 60, 0.55))
+    drop-shadow(0 10px 28px rgba(20, 14, 26, 0.7))
+    drop-shadow(0 0 56px rgba(242, 160, 176, 0.3));
 }
 
 .hero-lead {
@@ -324,14 +350,27 @@ button {
   margin-top: 14px;
 }
 
-/* Trae 式大按钮：双按钮铺满信息组，高约 50px */
+/* 按钮尺寸走标尺变量 */
 .hero-actions .button {
   flex: 1 1 0;
   justify-content: center;
-  min-height: 50px;
-  padding: 12px 24px;
-  font-size: 16px;
+  min-height: var(--hero-btn-h);
+  padding: 14px 24px;
+  font-size: var(--hero-btn-fs);
+  line-height: 1;
   white-space: nowrap;
+}
+
+/* 原语4 主副比例：主按钮更宽（仅横屏宽幅） */
+.hero-actions .button-primary {
+  flex-grow: 1.6;
+}
+
+/* 图2 态触发点：≤1100 按钮归为等宽 */
+@media (max-width: 1100px) {
+  .hero-actions .button-primary {
+    flex-grow: 1;
+  }
 }
 
 .button {
@@ -747,6 +786,14 @@ button {
   align-items: start;
 }
 
+/* 左列：图片 + tag 纵向排布，tag 永远紧贴图片下方，不受右列高度影响 */
+.camp-media-col {
+  display: grid;
+  /* 与轮播内部 图片→缩略图 的 12px 间隙一致 */
+  gap: 12px;
+  align-content: start;
+}
+
 .camp-carousel {
   display: grid;
   gap: 12px;
@@ -936,7 +983,6 @@ button {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  margin-top: 16px;
 }
 
 .event-strip span {
@@ -1451,10 +1497,6 @@ button {
     display: none;
   }
 
-  .hero h1 {
-    font-size: 52px;
-  }
-
   .hero-metrics,
   .promise-grid,
   .roadmap {
@@ -1472,6 +1514,7 @@ button {
   .apply-section {
     grid-template-columns: 1fr;
   }
+
 
   .company-card {
     flex-basis: min(280px, calc((100% - 12px) / 2));
@@ -1528,19 +1571,7 @@ button {
       linear-gradient(0deg, rgba(30, 22, 34, 0.76), transparent 38%, rgba(30, 22, 34, 0.42));
   }
 
-  .hero-content {
-    grid-template-columns: 1fr;
-    align-items: start;
-    align-content: start;
-    gap: 26px;
-    width: min(100% - 24px, 1180px);
-    padding-top: 130px;
-    padding-bottom: 40px;
-  }
-
-  .hero h1 {
-    font-size: 38px;
-  }
+  /* 图2 态：仅按钮归为等宽（原语4 关闭），尺寸仍走标尺 */
 
   .hero-lead {
     font-size: 16px;
@@ -1626,6 +1657,27 @@ button {
   .apply-section {
     width: min(100% - 24px, 1180px);
     padding: 24px;
+  }
+
+  /* 图4 态（比图3 更窄一点，首行即将被挤压）：单列交错，标题左上、按钮组左下；
+     交错态标尺：字号相对更大（Trae 图4 特征） */
+  .hero-content {
+    grid-template-columns: 1fr;
+    align-items: start;
+    align-content: space-between;
+    --hero-title-size: clamp(34px, 9vw, 56px);
+    padding-top: 120px;
+    padding-bottom: 36px;
+  }
+
+  .hero-panel {
+    justify-self: stretch;
+    justify-items: start;
+  }
+
+  .hero-brief,
+  .hero-note {
+    text-align: left;
   }
 
   .site-footer {

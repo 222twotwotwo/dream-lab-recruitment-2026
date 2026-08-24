@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, nextTick, ref, useTemplateRef, watch } from "vue";
 import { devTrackKeys, tracks, type TrackKey } from "../data/content";
-import { fadeInUp } from "../motion";
+import { fadeInUp } from "../anime";
 
 type ButtonKey = "dev" | TrackKey;
 

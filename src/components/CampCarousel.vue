@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted, ref, useTemplateRef } from "vue";
 import { campSlides, eventStrip } from "../data/content";
-import { animate, prefersReducedMotion } from "../motion";
+import { animate, prefersReducedMotion } from "../anime";
 
 /**
  * 训练营照片轮播：自动播放、悬停/聚焦暂停、键盘方向键、缩略图切换。
@@ -124,11 +124,13 @@ const thumbLabel = (index: number): string => `查看 ${slides[index]!.alt}`;
 
 <template>
   <div class="camp-layout">
-    <div
-      ref="rootRef"
-      class="camp-carousel"
-      aria-label="往届算法训练营现场轮播"
-    >
+    <!-- 左列独立容器：图片 + tag 纵向排布，右列再高也顶不开 tag -->
+    <div class="camp-media-col">
+      <div
+        ref="rootRef"
+        class="camp-carousel"
+        aria-label="往届算法训练营现场轮播"
+      >
       <div
         class="camp-carousel-stage"
         tabindex="0"
@@ -165,6 +167,11 @@ const thumbLabel = (index: number): string => `查看 ${slides[index]!.alt}`;
       </div>
     </div>
 
+    <!-- 备赛方向 tag：置于“往届训练方式”之前，在左列内紧贴图片正下方，不被右列高度顶开 -->
+    <div class="event-strip" aria-label="算法训练营备赛方向">
+      <span v-for="event in eventStrip" :key="event">{{ event }}</span>
+    </div>
+    </div>
     <div class="camp-copy">
       <article class="camp-callout">
         <span class="phase">往届训练方式</span>
@@ -194,7 +201,4 @@ const thumbLabel = (index: number): string => `查看 ${slides[index]!.alt}`;
     </div>
   </div>
 
-  <div class="event-strip" aria-label="算法训练营备赛方向">
-    <span v-for="event in eventStrip" :key="event">{{ event }}</span>
-  </div>
 </template>

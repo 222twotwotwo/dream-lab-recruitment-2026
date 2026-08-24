@@ -1,8 +1,7 @@
 <script setup lang="ts">
-import { animate } from "animejs";
+import { dollyCamera, prefersReducedMotion } from "../anime";
 import { onMounted, onUnmounted, useTemplateRef } from "vue";
 import type * as THREE from "three";
-import { prefersReducedMotion } from "../motion";
 
 /**
  * 英雄区星空场景（重写版）：
@@ -251,13 +250,9 @@ onMounted(async () => {
   const observer = new ResizeObserver(resize);
   observer.observe(root);
 
-  // 入场推镜（anime.js 驱动相机状态对象）
+  // 入场推镜（anime.js 驱动相机状态对象，见 src/anime/camera-dolly）
+  dollyCamera(cameraState);
   if (!reduceMotion) {
-    animate(cameraState, {
-      z: 9.2,
-      duration: 2200,
-      ease: "outExpo",
-    });
     renderLoop(performance.now());
   } else {
     draw(performance.now());

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted, useTemplateRef } from "vue";
 import { companies } from "../data/content";
-import { animate, prefersReducedMotion, stagger } from "../motion";
+import { animate, prefersReducedMotion, stagger } from "../anime";
 
 /**
  * 实习就业去向横向跑马灯。

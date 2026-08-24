@@ -1,10 +1,8 @@
 /**
- * 动效层：全面基于 anime.js v4。
- * 统一处理 prefers-reduced-motion。
+ * 动效基础设施：通用入场与滚动显现。
+ * 全站动画统一从 src/anime 引入。
  */
 import { animate } from "animejs";
-
-export { animate, stagger } from "animejs";
 
 export const prefersReducedMotion = window.matchMedia(
   "(prefers-reduced-motion: reduce)",
