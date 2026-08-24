@@ -1311,6 +1311,8 @@ button {
   border: 1px solid rgba(78, 61, 71, 0.1);
   border-radius: 5px;
   padding: 34px;
+  /* 锚点跳转「点击报名」：卡片避开悬浮顶栏（栏底 ~62px + 10px 间隙），不被遮挡 */
+  scroll-margin-top: 72px;
   background:
     linear-gradient(135deg, rgba(138, 174, 111, 0.12), rgba(233, 137, 151, 0.1)),
     #3A2E3C;

@@ -122,11 +122,15 @@ function syncActiveNav(): void {
     const section = document.querySelector(href);
     if (!(section instanceof HTMLElement)) continue;
     const { top, bottom } = section.getBoundingClientRect();
-    if (top <= line && bottom > line) {
+    // 计入 scroll-margin-top（如报名卡片的避让偏移），否则跳转落点会被判成上一区块
+    const margin =
+      parseFloat(getComputedStyle(section).scrollMarginTop) || 0;
+    const adjustedTop = top - margin;
+    if (adjustedTop <= line && bottom > line) {
       currentId = href;
       break;
     }
-    if (top <= line) currentId = href;
+    if (adjustedTop <= line) currentId = href;
   }
 
   // 滚到底时兜底高亮最后一项
