@@ -20,7 +20,10 @@
   --shadow: 0 20px 56px rgba(78, 61, 71, 0.14);
   --display: "Bahnschrift", "Microsoft YaHei UI", "Microsoft YaHei", "Segoe UI", sans-serif;
   --body: "Segoe UI", "Microsoft YaHei", system-ui, sans-serif;
-  --mono: "Cascadia Mono", "JetBrains Mono", Consolas, monospace;
+  /* 高饱和开心果：固定页脚揭示带（DLAB 字标底色），马卡龙高对比主色 */
+  --teal-pop: #7FC45B;
+  /* 固定页脚抽出高度：随视口宽度缩放（字标满宽），短窗以视口高度封顶 */
+  --footer-reveal-h: clamp(150px, 27.5vw, 44vh);
 }
 
 * {
@@ -45,6 +48,33 @@ body {
   font-family: var(--body);
   line-height: 1.68;
   letter-spacing: 0;
+}
+
+/* 固定页脚揭示（抽屉式）：主内容作为不透明上层掠过底层固定页脚，
+   背景与 body 完全一致（同源铺贴，网格对齐）；底部留出页脚抽出高度 */
+.page-shell {
+  position: relative;
+  z-index: 1;
+  /* 底部留白：刚好盖住跳转「报名」视图中的固定页脚，不露出绿带 */
+  padding-bottom: 72px;
+  margin-bottom: var(--footer-reveal-h);
+  background:
+    linear-gradient(90deg, rgba(201, 174, 140, 0.2) 1px, transparent 1px),
+    linear-gradient(rgba(201, 174, 140, 0.2) 1px, transparent 1px),
+    var(--paper);
+  background-size: 44px 44px, 44px 44px, auto;
+}
+
+/* 仅供读屏的隐藏文本原语 */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
 
 a {
@@ -205,7 +235,8 @@ button {
 }
 
 @media (max-width: 700px) {
-  body {
+  body,
+  .page-shell {
     background-size: 34px 34px, 34px 34px, auto;
   }
 }

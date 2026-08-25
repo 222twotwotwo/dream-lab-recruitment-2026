@@ -31,7 +31,7 @@ onUnmounted(() => {
 <template>
   <a class="skip-link" href="#tracks">跳到招新方向</a>
   <SiteHeader />
-  <main id="top">
+  <main id="top" class="page-shell">
     <HeroSection />
     <PromiseSection />
     <ProofSection />

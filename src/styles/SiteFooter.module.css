@@ -1,29 +1,98 @@
+/* 固定页脚揭示带（抽屉式拉出）：
+   沉底固定 + 低层级，主内容 .page-shell（z-index:1 不透明）掠过其上，
+   高度 --footer-reveal-h 随视口宽度缩放（字标满宽），短窗按视口高度封顶 */
 .footer {
+  position: fixed;
+  inset: auto 0 0 0;
+  z-index: 0;
   display: flex;
+  flex-direction: column;
+  height: var(--footer-reveal-h);
+  /* 抽屉沿口：高对比墨色描边 */
+  border-top: 2px solid var(--ink);
+  background: var(--teal-pop);
+  color: var(--ink);
+}
+
+/* 元信息行：与区块同宽标尺，左品牌右回顶 */
+.meta {
+  display: flex;
+  align-items: center;
   justify-content: space-between;
-  gap: 18px;
+  gap: 16px;
   width: min(1180px, calc(100% - 32px));
   margin: 0 auto;
-  border-top: 1px solid var(--line-strong);
-  padding: 24px 0 42px;
-  color: var(--ink-soft);
+  padding: 14px 0 0;
 }
 
-.footer p {
+.brand {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 4px 12px;
   margin: 0;
+  font-family: "ZCOOL QingKe HuangYou", var(--display);
+  font-size: 17px;
+  letter-spacing: 0.04em;
+  line-height: 1.3;
 }
 
-.footer a {
-  color: var(--teal-dark);
+.tagline {
+  color: rgba(78, 61, 71, 0.72);
   font-family: var(--mono);
-  font-size: 13px;
+  font-size: 11px;
   font-weight: 900;
+  letter-spacing: 0.08em;
+}
+
+/* 回顶链接：无边框，马卡龙黄文字 + 左侧上箭头；悬停填金反墨 */
+.topLink {
+  flex-shrink: 0;
+  border-radius: 999px;
+  padding: 6px 14px;
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 900;
+  transition:
+    background-color 160ms ease,
+    color 160ms ease,
+    transform 160ms ease;
+}
+
+.topLink::before {
+  content: "▲";
+  margin-right: 4px;
+}
+
+.topLink:hover {
+  background: var(--ink);
+  color: var(--teal-pop);
+  transform: translateY(-2px);
+}
+
+/* DLAB 字标画布：满宽铺满剩余带高，指针扰动由 dlab-fluid 驱动 */
+.wordmark {
+  display: block;
+  flex: 1;
+  width: 100%;
+  min-height: 0;
+  /* 纵向滚动留给页面，指针交互只做扰动 */
+  touch-action: pan-y;
 }
 
 @media (max-width: 700px) {
-  .footer {
-    align-items: flex-start;
-    flex-direction: column;
-    width: min(100% - 24px, 1180px);
+  .meta {
+    width: calc(100% - 24px);
+    padding-top: 10px;
+  }
+
+  .brand {
+    font-size: 15px;
+  }
+
+  .topLink {
+    padding: 4px 11px;
+    font-size: 11px;
   }
 }

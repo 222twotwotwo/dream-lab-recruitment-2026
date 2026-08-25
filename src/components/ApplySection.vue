@@ -4,6 +4,7 @@ import { useCssModule } from "vue";
 // Vapor Mode 不注入 $style（<style module> 的已知缺口）：显式从实例取模块类
 const $style = useCssModule();
 import SectionHeading from "./SectionHeading.vue";
+import { applyAssets } from "../data/content";
 </script>
 
 <template>
@@ -18,15 +19,15 @@ import SectionHeading from "./SectionHeading.vue";
       >
         面向官渡、光华、西城所有热爱技术、对计算机感兴趣的同学，计算机、电信、理学院小伙伴优先。报名方式以招新咨询群、院系通知和宣讲会现场安排为准。
       </SectionHeading>
-      <img :class="$style['mascot']" src="/assets/Alice.png" alt="Alice" height="300" loading="lazy" />
+      <img :class="$style['mascot']" :src="applyAssets.mascot.src" :alt="applyAssets.mascot.alt" height="300" loading="lazy" />
     </div>
     <div :class="$style['panel']" aria-label="报名准备">
       <figure :class="$style['qrCard']">
         <img
-          src="/assets/recruitment-qr.png?v=20260816"
-          alt="26广油逐梦创新实验室招新群二维码"
-          width="1031"
-          height="1478"
+          :src="applyAssets.qr.src"
+          :alt="applyAssets.qr.alt"
+          :width="applyAssets.qr.width"
+          :height="applyAssets.qr.height"
           loading="lazy"
         />
         <figcaption>

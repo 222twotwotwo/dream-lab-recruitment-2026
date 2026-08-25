@@ -305,6 +305,20 @@ export const heroDefaults = {
   },
 };
 
+/** 报名区吉祥物与群二维码（相对页面路径，配合 base:"./" 部署；经动态绑定引用） */
+export const applyAssets = {
+  mascot: {
+    src: "./assets/Alice.png",
+    alt: "Alice",
+  },
+  qr: {
+    src: "./assets/recruitment-qr.png?v=20260816",
+    alt: "26广油逐梦创新实验室招新群二维码",
+    width: 1031,
+    height: 1478,
+  },
+} as const;
+
 export const easterEgg = {
   hashes: {
     otto: true,
@@ -318,3 +332,12 @@ export const easterEgg = {
     alt: "滚木照片组成的彩蛋招新视觉",
   },
 };
+
+/** 页脚（固定揭示带 + DLAB 字标像素流体） */
+export const footerContent = {
+  brand: "逐梦创新实验室",
+  tagline: "DREAM LAB · 2026",
+  backToTop: "回到顶部",
+  wordmark: "DLAB",
+  wordmarkAria: "DLAB — 逐梦创新实验室字标，鼠标划过会泛起像素涟漪",
+} as const;
