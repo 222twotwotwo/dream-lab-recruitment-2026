@@ -36,13 +36,23 @@ bun run preview   # 预览生产构建
 ```
 src/
   anime/            动画中心（见上，一个动画一个文件）
-  components/       区块组件，一个区块一个文件
+  components/       区块组件，一个区块一个文件；样式经 <style module src> 引用
+  components/SectionHeading.vue  区块标题（eyebrow/标题/导语，深色底用 tone="cream"）
   data/content.ts   全部文案数据（方向/企业/照片/彩蛋），改文案来这里
-  styles/global.css 全局样式（单文件，含设计令牌 :root）
+  styles/           global.css 全局基座（设计令牌 :root、元素重置、.button 等跨组件原语）+ 各组件的 <Name>.module.css
   main.ts           createVaporApp 入口
 public/assets/      图片、logo、favicon（相对路径引用，base: "./"）
 index.html          Vite 入口（title 与 favicon 在这里，改动别弄丢）
 ```
+
+## CSS Modules（Vapor 注意事项）
+
+- 每个组件的模块样式是 `src/styles/<Name>.module.css`，SFC 末尾一行 `<style module src="../styles/<Name>.module.css"></style>` 引用；跨组件共享的只有 global.css 里的原语（.button 系列、.eyebrow/.phase/.card-index、.section）
+- **Vapor Mode 不会向模板注入 `$style`**（运行时 ReferenceError），每个用到的组件 script 里必须保留 `const $style = useCssModule()`，勿删
+- 外部模块文件下 volar 按 `Record<string, string>` 推导 `$style`，模板里一律方括号访问 `$style['card']`（`noPropertyAccessFromIndexSignature` 禁止点访问）
+- 模块内引用全局类用 `:global(.button)` 形式（如英雄区按钮标尺）
+- 滚动显现目标以 `data-reveal` 属性标记（App.vue 统一收集 `[data-reveal]`）；类名已哈希，不要按类名查询组件内元素（跑马灯用 `track.children`）
+- **导入顺序即级联顺序**：`main.ts` 里 `global.css` 必须先于 `App` 导入，否则 `.section` 等全局原语会同权重覆盖区块模块的 padding/margin 变体
 
 ## 设计令牌与主题
 

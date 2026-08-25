@@ -1,5 +1,9 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref } from "vue";
+import { useCssModule } from "vue";
+
+// Vapor Mode 不注入 $style（<style module> 的已知缺口）：显式从实例取模块类
+const $style = useCssModule();
+import { onMounted, onUnmounted, ref, useTemplateRef } from "vue";
 import { easterEgg, heroDefaults } from "../data/content";
 import { playHeroIntro, pulseCta } from "../anime";
 import HeroScene from "./HeroScene.vue";
@@ -8,6 +12,10 @@ const title = ref(heroDefaults.title);
 const brief = ref(heroDefaults.brief);
 const note = ref(heroDefaults.note);
 const media = ref(heroDefaults.media);
+
+const headingRef = useTemplateRef<HTMLHeadingElement>("heading");
+const panelRef = useTemplateRef<HTMLDivElement>("panel");
+const ctaRef = useTemplateRef<HTMLAnchorElement>("cta");
 
 function getNormalizedHash(): string {
   const rawHash = window.location.hash.replace(/^#/, "");
@@ -31,50 +39,47 @@ onMounted(() => {
   window.addEventListener("hashchange", applyEasterEggState);
   applyEasterEggState();
 
-  const root = rootRef.value;
-  if (!root) return;
-
-  playHeroIntro(root);
+  playHeroIntro({ heading: headingRef.value, panel: panelRef.value });
 
   // 主按钮“垂涎欲滴”：呼吸脉冲（与 hover 扫光叠加）
-  const cta = root.querySelector<HTMLElement>(".button-primary");
-  if (cta) pulseCta(cta);
+  if (ctaRef.value) pulseCta(ctaRef.value);
 });
 
 onUnmounted(() => {
   window.removeEventListener("hashchange", applyEasterEggState);
 });
-
-const rootRef = ref<HTMLElement | null>(null);
 </script>
 
 <template>
-  <section ref="rootRef" class="hero" aria-labelledby="hero-title">
+  <section :class="$style['hero']" aria-labelledby="hero-title">
     <img
-      class="hero-media"
+      :class="$style['media']"
       :src="media.src"
       :alt="media.alt"
       width="1800"
       height="1080"
     />
-    <div class="hero-visual" data-hero-scene aria-hidden="true">
+    <div :class="$style['visual']" data-hero-scene aria-hidden="true">
       <HeroScene />
     </div>
-    <div class="hero-shade" aria-hidden="true"></div>
-    <div class="hero-content">
-      <div class="hero-title-group">
-        <h1 id="hero-title">{{ title[0] }}<br />{{ title[1] }}</h1>
+    <div :class="$style['shade']" aria-hidden="true"></div>
+    <div :class="$style['content']">
+      <div :class="$style['titleGroup']">
+        <h1 id="hero-title" ref="heading" :class="$style['title']">{{ title[0] }}<br />{{ title[1] }}</h1>
       </div>
-      <div class="hero-panel">
-        <p class="hero-brief">
+      <div ref="panel" :class="$style['panel']">
+        <p :class="$style['brief']">
           <span v-for="line in brief" :key="line">{{ line }}</span>
         </p>
-        <div class="hero-actions" aria-label="主要行动">
-          <a class="button button-primary" href="#apply">点击报名</a>
+        <div :class="$style['actions']" aria-label="主要行动">
+          <a ref="cta" class="button button-primary" href="#apply">点击报名</a>
           <a class="button button-ghost" href="#tracks">选择方向</a>
         </div>
-        <p v-if="note" class="hero-note">{{ note }}</p>
+        <p v-if="note" :class="$style['note']">{{ note }}</p>
       </div>
     </div>
   </section>
 </template>
+
+<style module src="../styles/HeroSection.module.css"></style>
+

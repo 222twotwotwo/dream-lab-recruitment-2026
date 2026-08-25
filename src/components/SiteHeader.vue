@@ -1,4 +1,8 @@
 <script setup lang="ts">
+import { useCssModule } from "vue";
+
+// Vapor Mode 不注入 $style（<style module> 的已知缺口）：显式从实例取模块类
+const $style = useCssModule();
 import { nextTick, onMounted, onUnmounted, ref, watch } from "vue";
 import { navLinks } from "../data/content";
 import { hideDroplet, prefersReducedMotion, showDroplet, slideDroplet } from "../anime";
@@ -140,21 +144,24 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <header ref="headerRef" class="site-header" aria-label="站点导航">
-    <a class="brand" href="#top" aria-label="返回首页">
-      <span class="brand-stack" aria-hidden="true">
-        <span class="brand-normal">逐梦创新实验室</span>
-        <span class="brand-art">逐梦创新实验室</span>
+  <header ref="headerRef" :class="$style['header']" aria-label="站点导航">
+    <a :class="$style['brand']" href="#top" aria-label="返回首页">
+      <span :class="$style['brandStack']" aria-hidden="true">
+        <span :class="$style['brandNormal']">逐梦创新实验室</span>
+        <span :class="$style['brandArt']">逐梦创新实验室</span>
       </span>
     </a>
-    <nav ref="navRef" class="site-nav" aria-label="主导航">
-      <span ref="dropletRef" class="nav-droplet" aria-hidden="true"></span>
+    <nav ref="navRef" :class="$style['nav']" aria-label="主导航">
+      <span ref="dropletRef" :class="$style['droplet']" aria-hidden="true"></span>
       <a
         v-for="link in navLinks"
         :key="link.href"
         :href="link.href"
-        :class="{ 'is-active': activeHref === link.href }"
+        :class="[$style['link'], activeHref === link.href && $style['linkActive']]"
       >{{ link.label }}</a>
     </nav>
   </header>
 </template>
+
+<style module src="../styles/SiteHeader.module.css"></style>
+

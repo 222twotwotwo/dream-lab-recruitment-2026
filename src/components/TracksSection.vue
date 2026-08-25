@@ -1,6 +1,11 @@
 <script setup lang="ts">
+import { useCssModule } from "vue";
+
+// Vapor Mode 不注入 $style（<style module> 的已知缺口）：显式从实例取模块类
+const $style = useCssModule();
 import { computed, nextTick, ref, useTemplateRef, watch } from "vue";
 import { devTrackKeys, tracks, type TrackKey } from "../data/content";
+import SectionHeading from "./SectionHeading.vue";
 import { fadeInUp } from "../anime";
 
 type ButtonKey = "dev" | TrackKey;
@@ -57,18 +62,19 @@ watch(selectedKey, async () => {
 </script>
 
 <template>
-  <section id="tracks" class="section tracks-section" aria-labelledby="tracks-title">
-    <div class="section-heading">
-      <p class="eyebrow">Choose your track</p>
-      <h2 id="tracks-title">本次招新方向</h2>
-      <p>先选一个方向扎进去，再通过项目、会议、模拟赛和拆解练习持续迭代。基础好的同学可申请提前选拔。</p>
-    </div>
-    <div class="track-board">
-      <div class="track-tabs" aria-label="招新方向">
-        <div class="track-dev-picker">
+  <section id="tracks" :class="$style['tracks']" class="section" aria-labelledby="tracks-title">
+    <SectionHeading
+      eyebrow="Choose your track"
+      title-id="tracks-title"
+      title="本次招新方向"
+    >
+      先选一个方向扎进去，再通过项目、会议、模拟赛和拆解练习持续迭代。基础好的同学可申请提前选拔。
+    </SectionHeading>
+    <div :class="$style['board']" data-reveal>
+      <div :class="$style['tabs']" aria-label="招新方向">
+        <div :class="$style['devPicker']">
           <button
-            class="track-tab"
-            :class="{ 'is-active': isButtonActive('dev') }"
+            :class="[$style['tab'], isButtonActive('dev') && $style['tabActive']]"
             type="button"
             :aria-pressed="ariaPressed('dev')"
             aria-controls="track-panel"
@@ -76,14 +82,13 @@ watch(selectedKey, async () => {
           >
             开发组
           </button>
-          <div class="track-select-card">
-            <span class="track-select-label">开发细分方向</span>
-            <div class="track-subgroup-list" aria-label="开发组细分方向">
+          <div :class="$style['selectCard']">
+            <span :class="$style['selectLabel']">开发细分方向</span>
+            <div :class="$style['subgroupList']" aria-label="开发组细分方向">
               <button
                 v-for="item in subgroups"
                 :key="item.key"
-                class="track-subgroup"
-                :class="{ 'is-active': isButtonActive(item.key) }"
+                :class="[$style['subgroup'], isButtonActive(item.key) && $style['subgroupActive']]"
                 type="button"
                 :aria-pressed="ariaPressed(item.key)"
                 aria-controls="track-panel"
@@ -97,8 +102,7 @@ watch(selectedKey, async () => {
         <button
           v-for="tab in outerTabs"
           :key="tab.key"
-          class="track-tab"
-          :class="{ 'is-active': isButtonActive(tab.key) }"
+          :class="[$style['tab'], isButtonActive(tab.key) && $style['tabActive']]"
           type="button"
           :aria-pressed="ariaPressed(tab.key)"
           aria-controls="track-panel"
@@ -108,27 +112,27 @@ watch(selectedKey, async () => {
         </button>
       </div>
 
-      <article ref="panel" class="track-panel" id="track-panel" aria-live="polite">
+      <article ref="panel" :class="$style['panel']" id="track-panel" aria-live="polite">
         <header>
-          <div class="track-meta-row">
-            <span class="track-tag">{{ activeTrack.tag }}</span>
-            <div v-if="activeTrack.logos.length" class="track-logo-list" aria-label="相关技术标识">
+          <div :class="$style['metaRow']">
+            <span :class="$style['tag']">{{ activeTrack.tag }}</span>
+            <div v-if="activeTrack.logos.length" :class="$style['logoList']" aria-label="相关技术标识">
               <span
                 v-for="logo in activeTrack.logos"
                 :key="logo.label"
-                class="track-logo"
+                :class="$style['logo']"
                 :title="logo.label"
               >
-                <img class="track-logo-img" :src="logo.icon" alt="" width="24" height="24" loading="lazy" decoding="async" />
-                <span class="track-logo-name">{{ logo.label }}</span>
+                <img :class="$style['logoImg']" :src="logo.icon" alt="" width="24" height="24" loading="lazy" decoding="async" />
+                <span :class="$style['logoName']">{{ logo.label }}</span>
               </span>
             </div>
           </div>
           <h3>{{ activeTrack.title }}</h3>
           <p>{{ activeTrack.intro }}</p>
         </header>
-        <div class="track-detail-grid">
-          <section v-for="detail in activeTrack.details" :key="detail.title" class="track-detail">
+        <div :class="$style['detailGrid']">
+          <section v-for="detail in activeTrack.details" :key="detail.title" :class="$style['detail']">
             <h4>{{ detail.title }}</h4>
             <ul>
               <li v-for="item in detail.items" :key="item">{{ item }}</li>
@@ -139,3 +143,6 @@ watch(selectedKey, async () => {
     </div>
   </section>
 </template>
+
+<style module src="../styles/TracksSection.module.css"></style>
+

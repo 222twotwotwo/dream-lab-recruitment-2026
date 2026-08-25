@@ -1,0 +1,40 @@
+.heading {
+  display: grid;
+  padding: 0 4px;
+  gap: 10px;
+  max-width: 780px;
+  margin-bottom: 28px;
+}
+
+.heading h2 {
+  margin: 0;
+  font-family: var(--display);
+  font-size: 44px;
+  line-height: 1.12;
+  letter-spacing: 0;
+  text-wrap: balance;
+}
+
+.lead {
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: 17px;
+}
+
+.cream {
+  color: #EFE0CE;
+}
+
+/* 报名卡等自带布局的区块：去掉容器留白，间距与原 .apply-copy 一致 */
+.flush {
+  gap: 12px;
+  max-width: none;
+  margin-bottom: 0;
+  padding: 0;
+}
+
+@media (max-width: 700px) {
+  .heading h2 {
+    font-size: 32px;
+  }
+}

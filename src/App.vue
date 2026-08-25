@@ -13,19 +13,9 @@ import ApplySection from "./components/ApplySection.vue";
 import SiteFooter from "./components/SiteFooter.vue";
 import { observeReveals } from "./anime";
 
-// 与原版一致的滚动显现目标集合
-const REVEAL_SELECTOR = [
-  ".promise-card",
-  ".proof-panel",
-  ".company-showcase",
-  ".camp-callout",
-  ".camp-card",
-  ".track-board",
-  ".roadmap li",
-  ".selection-grid article",
-  ".sophomore-section",
-  ".apply-section",
-].join(", ");
+// 与原版一致的滚动显现目标集合：各组件以 data-reveal 标记显现元素
+// （原先按类名收集，CSS Modules 化后类名哈希，改用数据属性）
+const REVEAL_SELECTOR = "[data-reveal]";
 
 let stopReveals: (() => void) | undefined;
 

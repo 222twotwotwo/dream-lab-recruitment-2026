@@ -1,12 +1,22 @@
+<script setup lang="ts">
+import { useCssModule } from "vue";
+
+// Vapor Mode 不注入 $style（<style module> 的已知缺口）：显式从实例取模块类
+const $style = useCssModule();
+import SectionHeading from "./SectionHeading.vue";
+</script>
+
 <template>
-  <section class="section selection-section" aria-labelledby="selection-title">
-    <div class="section-heading">
-      <p class="eyebrow">Early selection</p>
-      <h2 id="selection-title">暑期提前选拔通道</h2>
-      <p>如果你已经具备一定基础，可以提前申请考核，通过后开学优先进入项目组参与实战开发。</p>
-    </div>
-    <div class="selection-grid">
-      <article>
+  <section :class="$style['selection']" class="section" aria-labelledby="selection-title">
+    <SectionHeading
+      eyebrow="Early selection"
+      title-id="selection-title"
+      title="暑期提前选拔通道"
+    >
+      如果你已经具备一定基础，可以提前申请考核，通过后开学优先进入项目组参与实战开发。
+    </SectionHeading>
+    <div :class="$style['grid']">
+      <article data-reveal>
         <h3>适合提前考核的同学</h3>
         <ul>
           <li>有程序设计竞赛获奖经历或较高算法水平</li>
@@ -15,7 +25,7 @@
           <li>暑期自学阶段表现突出，完成进阶学习任务</li>
         </ul>
       </article>
-      <article>
+      <article data-reveal>
         <h3>正式录取看什么</h3>
         <ul>
           <li>学习态度是否端正，是否愿意持续投入</li>
@@ -27,3 +37,6 @@
     </div>
   </section>
 </template>
+
+<style module src="../styles/SelectionSection.module.css"></style>
+

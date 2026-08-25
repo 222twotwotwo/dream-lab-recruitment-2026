@@ -1,4 +1,8 @@
 <script setup lang="ts">
+import { useCssModule } from "vue";
+
+// Vapor Mode 不注入 $style（<style module> 的已知缺口）：显式从实例取模块类
+const $style = useCssModule();
 import { onMounted, onUnmounted, useTemplateRef } from "vue";
 import { companies } from "../data/content";
 import { animate, prefersReducedMotion, stagger } from "../anime";
@@ -23,7 +27,8 @@ function cardCount(): number {
 function refreshLoopWidth(): void {
   const track = trackRef.value;
   if (!track) return;
-  const cards = track.querySelectorAll<HTMLElement>(".company-card");
+  // 卡片即 track 的直接子元素（原始组 + 克隆组），无需按类名查询
+  const cards = Array.from(track.children) as HTMLElement[];
   const firstClone = cards[cardCount()];
   loopWidth =
     firstClone && cards[0]
@@ -76,7 +81,7 @@ onMounted(() => {
   track.scrollTo({ left: 0, behavior: "auto" });
 
   // 与原版一致：入场动画只作用于原始卡片组
-  const originals = [...track.querySelectorAll<HTMLElement>(".company-card")].slice(
+  const originals = (Array.from(track.children) as HTMLElement[]).slice(
     0,
     cardCount(),
   );
@@ -98,17 +103,17 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="company-showcase" aria-label="实习就业品牌去向">
-    <div class="company-viewport">
-      <div ref="track" class="company-track" aria-label="实习就业去向自动轮播">
+  <div :class="$style['showcase']" data-reveal aria-label="实习就业品牌去向">
+    <div :class="$style['viewport']">
+      <div ref="track" :class="$style['track']" aria-label="实习就业去向自动轮播">
         <article
           v-for="(company, index) in [...companies, ...companies]"
           :key="`${company.name}-${index}`"
-          class="company-card"
+          :class="$style['card']"
           :aria-hidden="index >= companies.length ? 'true' : undefined"
         >
-          <span class="company-type">{{ company.type }}</span>
-          <div class="company-logo-frame">
+          <span :class="$style['type']">{{ company.type }}</span>
+          <div :class="$style['logoFrame']">
             <img :src="company.logo" :alt="company.logoAlt" loading="lazy" decoding="async" />
           </div>
           <h3>{{ company.name }}</h3>
@@ -118,3 +123,6 @@ onUnmounted(() => {
     </div>
   </div>
 </template>
+
+<style module src="../styles/CompanyMarquee.module.css"></style>
+
