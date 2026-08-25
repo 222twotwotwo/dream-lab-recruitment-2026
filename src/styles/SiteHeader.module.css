@@ -33,28 +33,23 @@
   display: inline-flex;
   align-items: center;
   min-width: 0;
+  /* 统一实验室 logo 字体：站酷庆科黄油体（不再随悬浮换字体） */
+  font-family: "ZCOOL QingKe HuangYou", var(--display);
   font-size: 17px;
-  font-weight: 900;
+  font-weight: 400;
+  letter-spacing: 0.04em;
   white-space: nowrap;
 }
 
-.brandStack {
-  position: relative;
+/* 逐字收合容器：字号基准由 .brand 提供，anime 擦洗时内联 +2px */
+.brandText {
   display: inline-block;
+  white-space: pre;
 }
 
-/* 未悬浮：艺术字；随浮起交叉淡入常规字体 */
-.brandNormal {
-  opacity: calc(var(--header-float, 0));
-}
-
-.brandArt {
-  position: absolute;
-  inset: 0;
-  font-family: "ZCOOL QingKe HuangYou", var(--display);
-  font-weight: 400;
-  letter-spacing: 0.04em;
-  opacity: calc(1 - var(--header-float, 0));
+/* 旋出的字宽度收合到 0：实体消失，不残留占位、不拦截指针 */
+.char {
+  display: inline-block;
 }
 
 .nav {

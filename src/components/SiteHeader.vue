@@ -1,18 +1,30 @@
 <script setup lang="ts">
+import { nextTick, onMounted, onUnmounted, ref, watch } from "vue";
 import { useCssModule } from "vue";
 
 // Vapor Mode 不注入 $style（<style module> 的已知缺口）：显式从实例取模块类
 const $style = useCssModule();
-import { nextTick, onMounted, onUnmounted, ref, watch } from "vue";
 import { navLinks } from "../data/content";
-import { hideDroplet, prefersReducedMotion, showDroplet, slideDroplet } from "../anime";
+import {
+  createBrandCollapse,
+  hideDroplet,
+  prefersReducedMotion,
+  showDroplet,
+  slideDroplet,
+  type BrandCollapse,
+} from "../anime";
 
 const activeHref = ref<string>("");
 const headerRef = ref<HTMLElement | null>(null);
 const navRef = ref<HTMLElement | null>(null);
 const dropletRef = ref<HTMLElement | null>(null);
+const brandTextRef = ref<HTMLElement | null>(null);
 let dropletPlaced = false;
 let dropletVisible = false;
+let brandCollapse: BrandCollapse | undefined;
+
+// 品牌字样：浮起时末字向前逐字旋出，只留「逐梦」（见 src/anime/brand-collapse）
+const brandChars = [..."逐梦创新实验室"];
 
 /** 水滴可见性/落位状态在此维护，动画委托给 src/anime/droplet */
 async function moveDroplet(instant = false): Promise<void> {
@@ -61,7 +73,7 @@ async function moveDroplet(instant = false): Promise<void> {
 }
 
 /** 首屏融入背景，随滚动 0→1 渐渐上色悬浮（CSS 按 --header-float 插值） */
-const FLOAT_RANGE = 140;
+const FLOAT_RANGE = 280;
 const CREAM: [number, number, number] = [255, 246, 234];
 const INK: [number, number, number] = [78, 61, 71];
 
@@ -70,6 +82,7 @@ function applyHeaderProgress(): void {
   if (!header) return;
   const progress = Math.min(1, Math.max(0, window.scrollY / FLOAT_RANGE));
   header.style.setProperty("--header-float", progress.toFixed(3));
+  brandCollapse?.seek(progress);
   const [r, g, b] = CREAM.map((c, i) => Math.round(c + (INK[i]! - c) * progress));
   // 未悬浮时字样 67% alpha，随悬浮渐至不透明
   const alpha = 0.67 + 0.33 * progress;
@@ -119,6 +132,8 @@ function scheduleSync(): void {
 }
 
 function onResize(): void {
+  // 断点字号变化后重测品牌字宽，再按当前进度重放
+  brandCollapse?.remeasure();
   applyHeaderProgress();
   void moveDroplet(true);
 }
@@ -128,13 +143,20 @@ watch(activeHref, () => {
 });
 
 onMounted(() => {
+  if (brandTextRef.value) {
+    brandCollapse = createBrandCollapse(brandTextRef.value);
+  }
   applyHeaderProgress();
   syncActiveNav();
   void moveDroplet(true);
   window.addEventListener("scroll", scheduleSync, { passive: true });
   window.addEventListener("resize", onResize, { passive: true });
-  // 艺术字体加载完成会改变顶栏尺寸，就绪后重测水滴位置
-  void document.fonts.ready.then(() => moveDroplet(true));
+  // 艺术字体加载完成会改变品牌字宽与顶栏尺寸，就绪后重测收合时间轴与水滴位置
+  void document.fonts.ready.then(() => {
+    brandCollapse?.remeasure();
+    applyHeaderProgress();
+    void moveDroplet(true);
+  });
 });
 
 onUnmounted(() => {
@@ -146,10 +168,11 @@ onUnmounted(() => {
 <template>
   <header ref="headerRef" :class="$style['header']" aria-label="站点导航">
     <a :class="$style['brand']" href="#top" aria-label="返回首页">
-      <span :class="$style['brandStack']" aria-hidden="true">
-        <span :class="$style['brandNormal']">逐梦创新实验室</span>
-        <span :class="$style['brandArt']">逐梦创新实验室</span>
-      </span>
+      <span ref="brandTextRef" :class="$style['brandText']" aria-hidden="true"><span
+        v-for="(ch, i) in brandChars"
+        :key="i"
+        :class="$style['char']"
+      >{{ ch }}</span></span>
     </a>
     <nav ref="navRef" :class="$style['nav']" aria-label="主导航">
       <span ref="dropletRef" :class="$style['droplet']" aria-hidden="true"></span>
@@ -164,4 +187,3 @@ onUnmounted(() => {
 </template>
 
 <style module src="../styles/SiteHeader.module.css"></style>
-

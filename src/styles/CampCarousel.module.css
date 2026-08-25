@@ -25,6 +25,9 @@
   border: 1px solid rgba(255, 255, 255, 0.16);
   border-radius: 5px;
   background: #463749;
+  /* 纵向滚动留给页面，横向拖拽归轮播 */
+  touch-action: pan-y;
+  user-select: none;
 }
 
 .track {
@@ -47,6 +50,7 @@
   aspect-ratio: 16 / 9;
   object-fit: cover;
   filter: saturate(0.94) contrast(1.04);
+  -webkit-user-drag: none;
 }
 
 .slide figcaption {
@@ -78,7 +82,18 @@
   color: #FFF6EA;
   cursor: pointer;
   backdrop-filter: blur(10px);
+  /* 仅悬停图片（或键盘聚焦按钮）时出现；触屏以拖拽滑动代替 */
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 200ms ease;
 }
+
+.stage:hover .control,
+.control:focus-visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
 
 .control::before {
   width: 11px;

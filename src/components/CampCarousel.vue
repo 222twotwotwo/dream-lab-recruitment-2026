@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import { useCssModule } from "vue";
-
-// Vapor Mode 不注入 $style（<style module> 的已知缺口）：显式从实例取模块类
-const $style = useCssModule();
-import { onMounted, onUnmounted, ref, useTemplateRef } from "vue";
+import { onMounted, onUnmounted, ref, useCssModule, useTemplateRef } from "vue";
 import { campSlides, eventStrip } from "../data/content";
 import { animate, prefersReducedMotion } from "../anime";
 
+// Vapor Mode 不注入 $style（<style module> 的已知缺口）：显式从实例取模块类
+const $style = useCssModule();
+
 /**
- * 训练营照片轮播：自动播放、悬停/聚焦暂停、键盘方向键、缩略图切换。
+ * 训练营照片轮播：自动播放、悬停/聚焦暂停、键盘方向键、缩略图切换、
+ * 指针拖拽（跟手、相册式吸附）；左右按钮仅悬停/聚焦图片时显示。
  */
 const AUTO_INTERVAL = 2500;
 const activeIndex = ref(0);
@@ -104,6 +104,75 @@ function onMouseLeave(): void {
   startAuto();
 }
 
+// 指针拖拽：跟手平移（相册式），松手按位移/速度吸附到相邻张；触屏与鼠标一致
+const stageRef = useTemplateRef<HTMLDivElement>("stage");
+let dragPid: number | null = null;
+let dragStartX = 0;
+let dragBasePct = 0;
+let dragPct = 0;
+let stageWidth = 1;
+let lastX = 0;
+let lastT = 0;
+let flingVelocity = 0; // %/ms，负值 = 向左滑（下一张）
+
+function onPointerDown(event: PointerEvent): void {
+  if (event.pointerType === "mouse" && event.button !== 0) return;
+  const stage = stageRef.value;
+  // 左右按钮在图内，不作为拖拽起点
+  if (!stage || (event.target as HTMLElement).closest("button")) return;
+  dragPid = event.pointerId;
+  dragStartX = event.clientX;
+  lastX = event.clientX;
+  lastT = event.timeStamp;
+  flingVelocity = 0;
+  dragPct = 0;
+  stageWidth = stage.offsetWidth || 1;
+  dragBasePct = -activeIndex.value * 100;
+  stage.setPointerCapture(event.pointerId);
+  stopAuto();
+}
+
+function onPointerMove(event: PointerEvent): void {
+  if (event.pointerId !== dragPid) return;
+  const rawPct = ((event.clientX - dragStartX) / stageWidth) * 100;
+  const min = -(slides.length - 1) * 100;
+  const pos = dragBasePct + rawPct;
+  // 相册式端点阻尼：越过首/尾后位移打折，松手弹回
+  dragPct = pos > 0 || pos < min ? rawPct / 3 : rawPct;
+  const dt = event.timeStamp - lastT;
+  if (dt > 0) {
+    flingVelocity = ((event.clientX - lastX) / stageWidth) * 100 / dt;
+  }
+  lastX = event.clientX;
+  lastT = event.timeStamp;
+  const track = trackRef.value;
+  if (track) track.style.transform = `translateX(${dragBasePct + dragPct}%)`;
+}
+
+function onPointerUp(event: PointerEvent): void {
+  if (event.pointerId !== dragPid) return;
+  dragPid = null;
+  let target = activeIndex.value;
+  if (Math.abs(dragPct) > 20 || Math.abs(flingVelocity) > 0.3) {
+    target += dragPct < 0 || flingVelocity < 0 ? 1 : -1;
+  }
+  target = Math.min(slides.length - 1, Math.max(0, target));
+  activeIndex.value = target;
+  scheduleResume();
+  const track = trackRef.value;
+  if (!track) return;
+  if (reduceMotion) {
+    track.style.transform = `translateX(${-target * 100}%)`;
+    return;
+  }
+  // 从当前跟手位置吸附（显式 from 值，避免与 anime 的 transform 缓存脱节）
+  animate(track, {
+    x: [`${dragBasePct + dragPct}%`, `${-target * 100}%`],
+    duration: 460,
+    ease: "outCubic",
+  });
+}
+
 onMounted(() => {
   const root = rootRef.value;
   if (!root) return;
@@ -136,9 +205,14 @@ const thumbLabel = (index: number): string => `查看 ${slides[index]!.alt}`;
         aria-label="往届算法训练营现场轮播"
       >
         <div
+          ref="stage"
           :class="$style['stage']"
           tabindex="0"
           @keydown="onKeydown"
+          @pointerdown="onPointerDown"
+          @pointermove="onPointerMove"
+          @pointerup="onPointerUp"
+          @pointercancel="onPointerUp"
         >
           <div ref="track" :class="$style['track']">
             <figure
@@ -206,4 +280,3 @@ const thumbLabel = (index: number): string => `查看 ${slides[index]!.alt}`;
 </template>
 
 <style module src="../styles/CampCarousel.module.css"></style>
-

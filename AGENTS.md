@@ -65,7 +65,8 @@ index.html          Vite 入口（title 与 favicon 在这里，改动别弄丢�
 - **顶栏悬浮**：`SiteHeader` 按滚动写入 `--header-float`（0→1），CSS 全部用 `calc()` 插值（位移/圆角/毛玻璃/字色含 67%→100% alpha）。首屏只有字样融入星空背景。锚线高亮判定会读取各区块的 `scroll-margin-top`
 - **锚点落点**：区块默认对齐页面顶部（无 scroll-margin）；`#apply` 卡片例外（`scroll-margin-top: 72px` 避让顶栏）。改跳转行为时同步检查 `syncActiveNav` 的锚线判定
 - **导航水滴**：`SiteHeader` 维护可见性/落位状态，动画委托 `src/anime/droplet.ts`
-- **训练营轮播**：真实横向轨道（`.camp-track` 平移），2.5s 自动播放；手动操作后 5s 无操作自动恢复；悬停暂停
+- **品牌字样收合**：浮起时字号 +2px、末字向前逐字旋出只留「逐梦」，随 `--header-float` 双向擦洗（seek 回卷即逆操作），委托 `src/anime/brand-collapse.ts`；旋出的字宽度收合到 0，实体消失不拦截指针
+- **训练营轮播**：真实横向轨道（`.camp-track` 平移），2.5s 自动播放；手动操作后 5s 无操作自动恢复；悬停暂停；左右按钮仅悬停/聚焦图片时显示（触屏以拖拽代替）；指针拖拽跟手、相册式吸附（端点阻尼 + 位移/速度判定），见 CampCarousel 的 pointer 事件组
 - **企业跑马灯**：卡片渲染两份，第二份 `aria-hidden`；`loopWidth` 未就绪时停摆，ResizeObserver 重新测量后自动恢复
 
 ## 约定
