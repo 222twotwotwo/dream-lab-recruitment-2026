@@ -115,6 +115,8 @@ export async function mountLive2D(opts: Live2DMountOptions): Promise<Live2DHandl
     action: AnchorAction;
     offX: number;
     offY: number;
+    // 每帧只测一次 getBoundingClientRect，避免逐锚点多次重排（见 layoutModel 刷新）
+    rect: DOMRect;
   }
 
   let anchorDefs: Anchor[] = [];
@@ -148,6 +150,7 @@ export async function mountLive2D(opts: Live2DMountOptions): Promise<Live2DHandl
         action: ((el.dataset["action"] as AnchorAction) || "pop") as AnchorAction,
         offX: parseFloat(el.dataset["x"] || "0") || 0,
         offY: parseFloat(el.dataset["y"] || "0") || 0,
+        rect: el.getBoundingClientRect(),
       }),
     );
 
@@ -157,12 +160,12 @@ export async function mountLive2D(opts: Live2DMountOptions): Promise<Live2DHandl
       overrideDrag: true,
       el: d.el,
       target: (_w, _h) => {
-        const r = d.el.getBoundingClientRect();
+        const r = d.rect;
         // 角色锚点原点为脚底(0.5,1)：对齐到元素底部中心 + 偏移；缩放时脚点不动、角色向上生长，位置不随尺寸漂移
         return { x: r.left + r.width / 2 + d.offX, y: r.bottom + d.offY, scale: d.scale };
       },
       weight: (_w, h) => {
-        const r = d.el.getBoundingClientRect();
+        const r = d.rect;
         const vis = Math.max(0, Math.min(r.bottom, h) - Math.max(r.top, 0));
         return r.height > 0 ? Math.min(1, (vis / r.height) * 1.4) : 0;
       },
@@ -216,10 +219,13 @@ export async function mountLive2D(opts: Live2DMountOptions): Promise<Live2DHandl
     const ratio = small ? 0.72 : mobile ? 0.86 : 1;
     const baseScale = (h * ratio) / nativeHeight;
 
+    // 每帧只测一次 DOM 锚点矩形，避免逐锚点多次 getBoundingClientRect 触发重排
+    for (const d of domAnchors) d.rect = d.el.getBoundingClientRect();
+
     // 元素锚点最大权重（用于稀释停靠锚点）
     let elMaxWeight = 0;
     for (const d of domAnchors) {
-      const r = d.el.getBoundingClientRect();
+      const r = d.rect;
       const vis = Math.max(0, Math.min(r.bottom, h) - Math.max(r.top, 0));
       const wt = r.height > 0 ? Math.min(1, (vis / r.height) * 1.4) : 0;
       if (wt > elMaxWeight) elMaxWeight = wt;
