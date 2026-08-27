@@ -22,6 +22,8 @@ jobs:
         with:
           name: dist
           path: dist/
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          run-id: ${{ github.event.workflow_run.id }}   # 🔑 关键！指向上游 workflow 的运行 ID
 
       # 添加 .nojekyll 以绕过 Jekyll 处理
       - name: Add .nojekyll
