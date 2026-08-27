@@ -19,7 +19,17 @@ import { applyAssets } from "../data/content";
       >
         面向官渡、光华、西城所有热爱技术、对计算机感兴趣的同学，计算机、电信、理学院小伙伴优先。报名方式以招新咨询群、院系通知和宣讲会现场安排为准。
       </SectionHeading>
-      <img :class="$style['mascot']" :src="applyAssets.mascot.src" :alt="applyAssets.mascot.alt" height="300" loading="lazy" />
+      <img
+        :class="$style['mascot']"
+        :src="applyAssets.mascot.src"
+        :alt="applyAssets.mascot.alt"
+        height="300"
+        loading="lazy"
+        data-live2d-anchor="apply"
+        data-scale="0.8"
+        data-y="200"
+        data-action="pop"
+      />
     </div>
     <div :class="$style['panel']" aria-label="报名准备">
       <figure :class="$style['qrCard']">
