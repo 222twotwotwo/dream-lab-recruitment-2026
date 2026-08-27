@@ -1,0 +1,93 @@
+.progress {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  width: min(1180px, calc(100% - 32px));
+  margin: 0 auto;
+}
+
+.dot {
+  border: 1px solid rgba(78, 61, 71, 0.18);
+  border-radius: 999px;
+  padding: 6px 13px;
+  background: rgba(255, 255, 255, 0.78);
+  color: var(--ink-soft);
+  cursor: pointer;
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.02em;
+  transition:
+    background-color 180ms ease,
+    border-color 180ms ease,
+    color 180ms ease,
+    transform 180ms ease,
+    box-shadow 180ms ease;
+}
+
+.dot:hover {
+  transform: translateY(-1px);
+  border-color: rgba(138, 174, 111, 0.55);
+  color: var(--teal-dark);
+}
+
+.dotActive {
+  border-color: rgba(138, 174, 111, 0.7);
+  background: rgba(138, 174, 111, 0.85);
+  color: #FFF6EA;
+  box-shadow: 0 8px 18px rgba(95, 127, 76, 0.2);
+}
+
+.progressTrack {
+  position: relative;
+  display: block;
+  width: min(420px, 52vw);
+  height: 4px;
+  border-radius: 999px;
+  background: rgba(78, 61, 71, 0.14);
+  overflow: hidden;
+}
+
+.progressFill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 0%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--teal), var(--orange), var(--violet));
+  transition: width 80ms linear;
+}
+
+.progressHint {
+  margin-left: 6px;
+  color: var(--ink-soft);
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+@media (max-width: 700px) {
+  .progress {
+    gap: 5px;
+  }
+
+  .dot {
+    padding: 4px 9px;
+    font-size: 10px;
+    letter-spacing: 0;
+    white-space: nowrap;
+  }
+
+  .progressTrack {
+    display: none;
+  }
+
+  .progressHint {
+    display: none;
+  }
+}

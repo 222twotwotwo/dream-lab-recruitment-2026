@@ -17,13 +17,15 @@ defineProps<{
   /** 标题文字 */
   title: string;
   tone?: "cream";
+  /** 放大展示型标题（方向页等沉浸舞台使用） */
+  prominent?: boolean;
   /** 去除容器留白，间距交由使用方 */
   flush?: boolean;
 }>();
 </script>
 
 <template>
-  <div :class="[$style['heading'], flush && $style['flush']]">
+  <div :class="[$style['heading'], flush && $style['flush'], prominent && $style['prominent']]">
     <p v-if="eyebrow" class="eyebrow">{{ eyebrow }}</p>
     <h2 :id="titleId">{{ title }}</h2>
     <p :class="[$style['lead'], tone === 'cream' && $style['cream']]"><slot /></p>

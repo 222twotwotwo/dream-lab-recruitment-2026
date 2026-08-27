@@ -218,6 +218,29 @@ export const tracks: Record<TrackKey, Track> = {
   },
 };
 
+/** 方向页横向滚动卡片顺序（开发组细分 + 竞赛 + Agent） */
+export const trackOrder: TrackKey[] = [
+  "frontend",
+  "backend",
+  "client",
+  "media",
+  "contest",
+  "agent",
+];
+
+/** 方向页底部描点的短文案 */
+export const trackDotLabels: Record<TrackKey, string> = {
+  frontend: "前端",
+  backend: "后端",
+  client: "客户端",
+  media: "数媒",
+  contest: "竞赛",
+  agent: "Agent",
+};
+
+/** 方向页滚动提示 */
+export const trackScrollHint = "Scroll";
+
 export interface CompanyCard {
   type: "就业" | "实习";
   logo: string;
