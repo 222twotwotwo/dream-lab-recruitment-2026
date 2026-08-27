@@ -1,0 +1,36 @@
+name: Deploy to GitHub Pages
+
+on:
+  workflow_run:
+    workflows: ["Build Artifact"]   # 必须与 push.yml 中的 name 完全一致
+    types:
+      - completed
+  workflow_dispatch:                # 允许手动触发
+
+permissions:
+  contents: write   # 需要写入权限以推送 gh-pages 分支
+  pages: write      # 可选，但建议保留
+  id-token: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' || github.event_name == 'workflow_dispatch' }}
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
+
+      # 添加 .nojekyll 以绕过 Jekyll 处理
+      - name: Add .nojekyll
+        run: touch dist/.nojekyll
+
+      - name: Deploy to gh-pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
+          publish_branch: gh-pages
+          force_orphan: true   # 可保持分支干净
