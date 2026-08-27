@@ -7,6 +7,7 @@ import { onMounted, onUnmounted, ref, useTemplateRef } from "vue";
 import { easterEgg, heroDefaults } from "../data/content";
 import { playHeroIntro, pulseCta } from "../anime";
 import HeroScene from "./HeroScene.vue";
+import HeroLive2D from "./HeroLive2D.vue";
 
 const title = ref(heroDefaults.title);
 const brief = ref(heroDefaults.brief);
@@ -63,6 +64,7 @@ onUnmounted(() => {
       <HeroScene />
     </div>
     <div :class="$style['shade']" aria-hidden="true"></div>
+    <HeroLive2D />
     <div :class="$style['content']">
       <div :class="$style['titleGroup']">
         <h1 id="hero-title" ref="heading" :class="$style['title']">{{ title[0] }}<br />{{ title[1] }}</h1>

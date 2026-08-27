@@ -6,6 +6,8 @@
   background: #2E2438;
   color: #FFF6EA;
   isolation: isolate;
+  /* 抬升英雄的层叠上下文，使其内部角色层（仍在文案之下）仍高于后续各区块；否则后续区块会盖住常驻角标 */
+  z-index: 2;
 }
 
 .media,
