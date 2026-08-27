@@ -262,7 +262,7 @@ export const companies: CompanyCard[] = [
   { type: "实习", logo: "./assets/company-logos/yoozoo.png", logoAlt: "游族官方 logo", name: "游族", desc: "游戏后端 / 平台服务" },
   { type: "实习", logo: "./assets/company-logos/huolala.ico", logoAlt: "货拉拉官方 logo", name: "货拉拉", desc: "平台工程 / 基础服务" },
   { type: "实习", logo: "./assets/company-logos/trs.png", logoAlt: "拓尔思官方 logo", name: "拓尔思", desc: "AI / 大数据" },
-  { type: "实习", logo: "./assets/company-logos/topwinchance.jpg", logoAlt: "壹网壹创官方 logo", name: "壹网壹创", desc: "电商 / 数字化运营" },
+  { type: "实习", logo: "./assets/company-logos/topwinchance.webp", logoAlt: "壹网壹创官方 logo", name: "壹网壹创", desc: "电商 / 数字化运营" },
 ];
 
 export interface CampSlide {
@@ -323,7 +323,7 @@ export const heroDefaults = {
   ],
   note: "军训后开设线下指导班，零基础也能跨过入门门槛",
   media: {
-    src: "./assets/dream-lab-hero.png",
+    src: "./assets/dream-lab-hero.webp",
     alt: "实验室桌面、白板系统图、代码终端和竞赛奖杯组成的招新视觉",
   },
 };
@@ -331,7 +331,7 @@ export const heroDefaults = {
 /** 报名区吉祥物与群二维码（相对页面路径，配合 base:"./" 部署；经动态绑定引用） */
 export const applyAssets = {
   mascot: {
-    src: "./assets/Alice.png",
+    src: "./assets/Alice.webp",
     alt: "Alice",
   },
   qr: {
@@ -351,7 +351,7 @@ export const easterEgg = {
   title: ["滚木创新实验室", "2026 :// Project</404>"],
   brief: ["冲刺，冲刺，冲，冲，冲♿️"],
   media: {
-    src: "./assets/GunMu.png",
+    src: "./assets/GunMu.webp",
     alt: "滚木照片组成的彩蛋招新视觉",
   },
 };
