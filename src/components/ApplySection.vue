@@ -33,7 +33,7 @@ import { applyAssets } from "../data/content";
         <figcaption>
           <strong>扫码加入招新咨询群</strong>
           <span>26广油逐梦创新实验室招新群</span>
-          <small>二维码 7 天内有效，8 月 23 日前可扫码加入。</small>
+          <small>二维码 7 天内有效，8 月 31 日前可扫码加入。</small>
         </figcaption>
       </figure>
       <div :class="$style['actions']">
@@ -44,4 +44,3 @@ import { applyAssets } from "../data/content";
 </template>
 
 <style module src="../styles/ApplySection.module.css"></style>
-

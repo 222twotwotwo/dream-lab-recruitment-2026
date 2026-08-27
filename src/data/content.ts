@@ -335,7 +335,7 @@ export const applyAssets = {
     alt: "Alice",
   },
   qr: {
-    src: "./assets/recruitment-qr.png?v=20260816",
+    src: "./assets/recruitment-qr.webp",
     alt: "26广油逐梦创新实验室招新群二维码",
     width: 1031,
     height: 1478,

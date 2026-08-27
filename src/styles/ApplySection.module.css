@@ -61,7 +61,9 @@
 
 .qrCard figcaption {
   display: grid;
+  justify-items: center;
   gap: 3px;
+  text-align: center;
   color: #FFF6EA;
 }
 
