@@ -358,6 +358,17 @@ export async function mountLive2D(opts: Live2DMountOptions): Promise<Live2DHandl
     const layerEl = container.parentElement ?? container;
     layerEl.style.zIndex = scrollProgress > 0.85 || anchorEngaged ? "60" : "";
     container.style.setProperty("--gx", mobile ? "50%" : "72%");
+
+    // 9) 同步触屏拾取层到角色包围盒（仅触屏下 pointer-events:auto 才生效）
+    if (hit) {
+      const b = charRect();
+      if (b) {
+        hit.style.left = `${b.left}px`;
+        hit.style.top = `${b.top}px`;
+        hit.style.width = `${b.right - b.left}px`;
+        hit.style.height = `${b.bottom - b.top}px`;
+      }
+    }
   }
 
   // 角色可见面积占比（pos 为脚底中心）：用于判断是否“超限”需要吸附回锚点
@@ -404,14 +415,26 @@ export async function mountLive2D(opts: Live2DMountOptions): Promise<Live2DHandl
     }
   }
 
-  // 角色在屏幕上的实际包围盒（stage 坐标 == 视口坐标），用于判断是否按在角色身上
+  // 角色在屏幕上的实际可拾取包围盒（stage 坐标 == 视口坐标）。
+  // 注意 model.getBounds() 是整张模型画布（含大量透明留白），直接当命中区会让触屏拾取层过大、
+  // 挡住下方内容点击/滚动；这里按比例内缩，只保留角色躯干/头部区域（脚底保留）。
   function charRect(): { left: number; top: number; right: number; bottom: number } | null {
     if (!model) return null;
     const b = model.getBounds();
-    return { left: b.x, top: b.y, right: b.x + b.width, bottom: b.y + b.height };
+    const w = b.width;
+    const h = b.height;
+    const ix = w * 0.22; // 左右各收 22%，去掉肩部/画布透明边
+    const iyT = h * 0.22; // 顶部收 22%
+    const iyB = h * 0.05; // 脚底保留
+    return {
+      left: b.x + ix,
+      top: b.y + iyT,
+      right: b.x + w - ix,
+      bottom: b.y + h - iyB,
+    };
   }
 
-  function onDragDown(event: PointerEvent): void {
+  function beginDrag(event: PointerEvent): void {
     if (!model || reducedMotion) return;
     const rect = charRect();
     if (!rect) return;
@@ -454,7 +477,22 @@ export async function mountLive2D(opts: Live2DMountOptions): Promise<Live2DHandl
       layer.style.pointerEvents = ""; // 恢复穿透，不再阻挡内容点击
       layer.style.cursor = "";
     }
+    if (hit && activePointerId !== null) {
+      try {
+        hit.releasePointerCapture(activePointerId);
+      } catch {
+        /* noop */
+      }
+      activePointerId = null;
+    }
   }
+
+  const coarsePointer = window.matchMedia("(pointer: coarse)").matches;
+  // 角色拾取层：仅覆盖角色包围盒，触屏下 pointer-events:auto + touch-action:none，
+  // 让“按在角色上拖动”不被浏览器当作滚动手势（否则会触发 pointercancel 导致拖动断断续续）；
+  // 桌面端 pointer-events:none，仍由 window 监听 + charRect 判定，不阻挡内容点击。
+  let hit: HTMLDivElement | null = null;
+  let activePointerId: number | null = null;
 
   const tick = (): void => {
     if (!model || disposed) return;
@@ -478,6 +516,32 @@ export async function mountLive2D(opts: Live2DMountOptions): Promise<Live2DHandl
     buildAnchors();
     layoutModel();
 
+    // 角色拾取层（触屏拖动专用）
+    hit = document.createElement("div");
+    hit.setAttribute("aria-hidden", "true");
+    hit.setAttribute("data-live2d-hit", "");
+    hit.style.position = "absolute";
+    hit.style.left = "0px";
+    hit.style.top = "0px";
+    hit.style.width = "0px";
+    hit.style.height = "0px";
+    hit.style.pointerEvents = coarsePointer ? "auto" : "none";
+    hit.style.touchAction = "none";
+    hit.style.zIndex = "2";
+    container.appendChild(hit);
+    const hitEl = hit;
+    hitEl.addEventListener("pointerdown", (e: PointerEvent) => {
+      if (e.pointerType === "mouse") return; // 鼠标走 window 监听
+      try {
+        hitEl.setPointerCapture(e.pointerId);
+        activePointerId = e.pointerId;
+      } catch {
+        /* noop */
+      }
+      beginDrag(e);
+    });
+    disposers.push(() => hitEl.remove());
+
     requestAnimationFrame(() => {
       canvas.style.opacity = "1";
     });
@@ -494,12 +558,16 @@ export async function mountLive2D(opts: Live2DMountOptions): Promise<Live2DHandl
     disposers.push(() => window.removeEventListener("pointermove", pointerToFocus));
     window.addEventListener("pointerdown", onTap);
     disposers.push(() => window.removeEventListener("pointerdown", onTap));
-    window.addEventListener("pointerdown", onDragDown, { passive: false });
+    const onWinDragDown = (e: PointerEvent): void => {
+      if (e.pointerType === "touch") return; // 触屏走 hit 层（带指针捕获），避免与 window 重复触发
+      beginDrag(e);
+    };
+    window.addEventListener("pointerdown", onWinDragDown, { passive: false });
     window.addEventListener("pointermove", onDragMove, { passive: false });
     window.addEventListener("pointerup", onDragUp);
     window.addEventListener("pointercancel", onDragUp);
     disposers.push(() => {
-      window.removeEventListener("pointerdown", onDragDown);
+      window.removeEventListener("pointerdown", onWinDragDown);
       window.removeEventListener("pointermove", onDragMove);
       window.removeEventListener("pointerup", onDragUp);
       window.removeEventListener("pointercancel", onDragUp);
@@ -515,6 +583,13 @@ export async function mountLive2D(opts: Live2DMountOptions): Promise<Live2DHandl
     const onLoad = (): void => buildAnchors(); // 图片加载完后布局可能位移
     window.addEventListener("load", onLoad);
     disposers.push(() => window.removeEventListener("load", onLoad));
+    // 标签页隐藏时停掉渲染循环（省电省 CPU），恢复时重启（reducedMotion 下本就静态）
+    const onVisibility = (): void => {
+      if (document.hidden) app.ticker.stop();
+      else if (!reducedMotion) app.ticker.start();
+    };
+    document.addEventListener("visibilitychange", onVisibility);
+    disposers.push(() => document.removeEventListener("visibilitychange", onVisibility));
     computeScroll();
 
     onReady?.();
