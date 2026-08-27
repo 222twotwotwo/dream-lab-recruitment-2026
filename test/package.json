@@ -1,0 +1,11 @@
+{
+  "name": "animejs-home-replica",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1"
+  },
+  "devDependencies": {
+    "vite": "^5.4.0"
+  }
+}
