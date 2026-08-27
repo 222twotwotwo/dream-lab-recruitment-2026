@@ -1,0 +1,13 @@
+# 包管理 / 依赖（不需要上传）
+test/node_modules/
+node_modules/
+
+# 3D 模型资源（体积大，不入库）
+test/models/
+
+# 备份文件
+*.bak
+
+# 系统文件
+.DS_Store
+Thumbs.db
