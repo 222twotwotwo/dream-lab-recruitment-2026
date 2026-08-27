@@ -25,12 +25,12 @@ bun run preview   # 预览生产构建
 
 ## 动画规则（硬性）
 
-- **所有动画必须以模块化单文件放在 `src/anime/` 下**，一个动画一个文件（如 `droplet.ts`、`hero-intro.ts`、`cta-pulse.ts`、`camera-dolly.ts`、`brand-collapse.ts`、`dlab-fluid.ts`），经 `src/anime/index.ts` 统一导出
+- **所有动画必须以模块化单文件放在 `src/anime/` 下**，一个动画一个文件（如 `droplet.ts`、`hero-intro.ts`、`cta-pulse.ts`、`camera-dolly.ts`、`brand-collapse.ts`、`dlab-fluid.ts`、`direction-scroll.ts`、`direction-aurora.ts`），经 `src/anime/index.ts` 统一导出
 - 组件只维护状态与 DOM 引用，**组件内不得内联 `animate()` 调用**；需要新动画就在 `src/anime/` 建新模块
 - 动画引擎统一 anime.js v4（`import ... from "animejs"`）；不要引入其他动画库，不要回退到原生 WAAPI/CSS transition 做补间（纯 CSS hover 过渡除外）
 - 一切补间动画必须尊重 `prefersReducedMotion`（`src/anime/effects.ts`）
 - 滚动联动（非补间）的连续插值用 CSS 变量 + `calc()` 驱动（参考顶栏 `--header-float` 模式），这类不属于 anime 补间
-- 连续物理模拟与 3D 场景（`HeroScene` 的 three.js、页脚 `dlab-fluid.ts` 像素流体）走各自 rAF 渲染循环，不经 anime.js；静止即停循环零开销
+- 连续物理模拟与 3D 场景（`HeroScene` 的 three.js、方向页 `direction-aurora.ts` 的 WebGL 极光、页脚 `dlab-fluid.ts` 像素流体）走各自 rAF 渲染循环，不经 anime.js；静止即停循环零开销
 
 ## 结构
 
@@ -39,6 +39,9 @@ src/
   anime/            动画中心（见上，一个动画一个文件）
   components/       区块组件，一个区块一个文件；样式经 <style module src> 引用
   components/SectionHeading.vue  区块标题（eyebrow/标题/导语，深色底用 tone="cream"）
+  components/TracksSection.vue  招新方向区块：桌面 sticky 舞台 + 滚动驱动横向轨道，竖屏退化原生横滑
+  components/DirectionNav.vue   方向导航：六按钮 + 进度条指示当前项（竖屏缩排、隐藏进度条）
+  components/DirectionCard.vue  单个方向卡片（立方体视觉 + 描点 + 详情）
   data/content.ts   全部文案数据（方向/企业/照片/彩蛋），改文案来这里
   styles/           global.css 全局基座（设计令牌 :root、元素重置、.button 等跨组件原语）+ 各组件的 <Name>.module.css
   main.ts           createVaporApp 入口
@@ -70,6 +73,8 @@ index.html          Vite 入口（title 与 favicon 在这里，改动别弄丢�
 - **训练营轮播**：真实横向轨道（`.camp-track` 平移），2.5s 自动播放；手动操作后 5s 无操作自动恢复；悬停暂停；左右按钮仅悬停/聚焦图片时显示（触屏以拖拽代替）；指针拖拽跟手、相册式吸附（端点阻尼 + 位移/速度判定），见 CampCarousel 的 pointer 事件组
 - **企业跑马灯**：卡片渲染两份，第二份 `aria-hidden`；`loopWidth` 未就绪时停摆，ResizeObserver 重新测量后自动恢复
 - **固定页脚揭示（抽屉式）**：`SiteFooter` 沉底 `position: fixed`（z-index 0），主内容 `.page-shell` 作为不透明上层（z-index 1）掠过其上，滚到页尾完整抽出；`.page-shell` 底部留白恰好盖住页脚高度（`--footer-reveal-h` 随视口宽缩放、短窗按视口高封顶），锚点跳转不露出绿带。DLAB 字标经 canvas 离屏栅格化渲染，像素流体扰动委托 `src/anime/dlab-fluid.ts`：指针动量注入冲量（快甩大块位移、慢移微澜）、守恒甩出三级透明度档（1/0.7/0.45）、方向性阻力（往字身难撞、往字外顺畅飞出）、静止归位停循环；`prefersReducedMotion` 只画静态字标
+- **招新方向横向轨道**：`TracksSection` 桌面端 `.stage` 为 sticky 全屏，`.track` 由纵向滚动进度经 CSS 变量 `--tracks-travel` / `--tracks-progress` 平移（calc 驱动，非 anime 补间）；卡片随滚动依次居中并触发 `playDirectionCardActive`/`Idle`（`src/anime/direction-scroll.ts`）。`DirectionNav` 六枚按钮 + `.progressTrack` 高亮当前项（`goTo` 滚到对应卡片）。背景极光为 WebGL 着色器（`src/anime/direction-aurora.ts`），叠色溢出用保色相软压缩避免纯白。竖屏（`orientation: portrait and max-width: 700px`）整体退化：`.track` 改 `overflow-x: auto` + scroll-snap，监听轨道 `scroll` 取居中卡片为当前项，`goTo` 直接 `scrollTo` 轨道，aurora 不初始化；`isMobile` 为非响应式 `let`，事件回调读取最新值，勿在模板绑定它
+- **英雄区彩蛋**：`HeroSection` 读取 `window.location.hash`，归一化（decode + toLowerCase）后命中 `easterEgg.hashes`（`otto` / `♿` / `♿️`）即把标题/导语/配图切换为「滚木」彩蛋版（`src/data/content.ts` 的 `easterEgg`），监听 `hashchange` 实时切换、移除 hash 即恢复默认
 
 ## 约定
 
