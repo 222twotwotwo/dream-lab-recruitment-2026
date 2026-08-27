@@ -7,3 +7,16 @@
 .text-xxxl { line-height: 1.12em; }
 .section-text h2:not(:last-child) { margin-bottom: .5em; }
 #intro .section-text { margin-bottom: var(--margin-xxxl); }
+
+/* ===== 入群悬浮球 ===== */
+.join-float{position:fixed;right:24px;bottom:24px;z-index:2000;display:flex;flex-direction:column;align-items:flex-end;gap:14px}
+.join-float-btn{display:flex;align-items:center;justify-content:center;width:64px;height:64px;border:none;border-radius:50%;cursor:pointer;color:#3a3a3a;background:#ececec;box-shadow:0 12px 28px rgba(0,0,0,.18);transition:transform .25s ease,box-shadow .25s ease,background .25s ease;animation:join-float-bob 3.2s ease-in-out infinite}
+.join-float-btn svg{width:30px;height:30px}
+.join-float-btn:hover{transform:translateY(-3px) scale(1.06);background:#e0e0e0;box-shadow:0 14px 34px rgba(0,0,0,.25);animation-play-state:paused}
+@keyframes join-float-bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.join-float-card{width:224px;padding:16px;background:#fff;color:#171717;border-radius:16px;text-align:center;box-shadow:0 20px 48px rgba(0,0,0,.35);opacity:0;visibility:hidden;transform:translateY(8px) scale(.94);transform-origin:bottom right;transition:opacity .25s ease,transform .25s ease,visibility .25s}
+.join-float:hover .join-float-card,.join-float.is-open .join-float-card{opacity:1;visibility:visible;transform:translateY(0) scale(1)}
+.join-float-card img{width:190px;height:auto;border-radius:8px;display:block;margin:0 auto 12px}
+.join-float-card strong{display:block;font-size:.95rem;line-height:1.4}
+.join-float-card span{display:block;margin-top:6px;font-size:.72rem;color:#666;line-height:1.5}
+@media (max-width:640px){.join-float{right:16px;bottom:16px}.join-float-btn{width:56px;height:56px}.join-float-card{width:200px;right:0}}
