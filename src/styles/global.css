@@ -1,0 +1,242 @@
+/**
+ * 全局基座：设计令牌、元素重置、跨组件共享原语。
+ * 各区块样式已组件化为各自 SFC 内的 CSS Modules（<style module>）。
+ */
+
+:root {
+  color-scheme: light;
+  --ink: #4E3D47;
+  --ink-soft: #7D6A74;
+  --paper: #FAF1E4;
+  --paper-strong: #F2E5D0;
+  --surface: #ffffff;
+  --line: #E6D5BE;
+  --line-strong: #C9AE8C;
+  --teal: #8AAE6F;
+  --teal-dark: #5F7F4C;
+  --orange: #E9899B;
+  --violet: #A98BD6;
+  --gold: #E4C05C;
+  --shadow: 0 20px 56px rgba(78, 61, 71, 0.14);
+  --display: "Bahnschrift", "Microsoft YaHei UI", "Microsoft YaHei", "Segoe UI", sans-serif;
+  --body: "Segoe UI", "Microsoft YaHei", system-ui, sans-serif;
+  /* 高饱和开心果：固定页脚揭示带（DLAB 字标底色），马卡龙高对比主色 */
+  --teal-pop: #7FC45B;
+  /* 固定页脚抽出高度：随视口宽度缩放（字标满宽），短窗以视口高度封顶 */
+  --footer-reveal-h: clamp(150px, 27.5vw, 44vh);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  overflow-x: clip;
+  scroll-behavior: smooth;
+}
+
+body {
+  overflow-x: clip;
+  min-width: 320px;
+  margin: 0;
+  background:
+    linear-gradient(90deg, rgba(201, 174, 140, 0.2) 1px, transparent 1px),
+    linear-gradient(rgba(201, 174, 140, 0.2) 1px, transparent 1px),
+    var(--paper);
+  background-size: 44px 44px, 44px 44px, auto;
+  color: var(--ink);
+  font-family: var(--body);
+  line-height: 1.68;
+  letter-spacing: 0;
+}
+
+/* 固定页脚揭示（抽屉式）：主内容作为不透明上层掠过底层固定页脚，
+   背景与 body 完全一致（同源铺贴，网格对齐）；底部留出页脚抽出高度 */
+.page-shell {
+  position: relative;
+  z-index: 1;
+  /* 底部留白：刚好盖住跳转「报名」视图中的固定页脚，不露出绿带 */
+  padding-bottom: 72px;
+  margin-bottom: var(--footer-reveal-h);
+  background:
+    linear-gradient(90deg, rgba(201, 174, 140, 0.2) 1px, transparent 1px),
+    linear-gradient(rgba(201, 174, 140, 0.2) 1px, transparent 1px),
+    var(--paper);
+  background-size: 44px 44px, 44px 44px, auto;
+}
+
+/* 仅供读屏的隐藏文本原语 */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+a:hover {
+  color: var(--teal-dark);
+}
+
+a:focus-visible,
+button:focus-visible {
+  outline: 3px solid rgba(138, 174, 111, 0.55);
+  outline-offset: 3px;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+button {
+  font: inherit;
+}
+
+.skip-link {
+  position: fixed;
+  top: 12px;
+  left: 12px;
+  z-index: 40;
+  transform: translateY(-160%);
+  border: 1px solid var(--line-strong);
+  border-radius: 5px;
+  padding: 8px 12px;
+  background: var(--surface);
+  color: var(--teal-dark);
+  font-weight: 800;
+}
+
+.skip-link:focus {
+  transform: translateY(0);
+}
+
+/* 小标签排版原语：eyebrow（栏目眉）/ phase（阶段）/ card-index（卡片序号） */
+.eyebrow,
+.phase,
+.card-index {
+  margin: 0;
+  color: var(--orange);
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+/* 按钮原语：英雄区与报名区共用，尺寸由使用方模块覆盖 */
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 46px;
+  min-width: 92px;
+  border: 1px solid transparent;
+  border-radius: 5px;
+  padding: 10px 16px;
+  cursor: pointer;
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.button-primary {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(
+    120deg,
+    #F6B4C0 0%,
+    #E9899B 38%,
+    #F2A0B0 62%,
+    #F3C982 100%
+  );
+  color: #4E3D47;
+  font-weight: 900;
+  box-shadow:
+    0 14px 36px rgba(233, 137, 151, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.55),
+    inset 0 -8px 18px rgba(178, 96, 112, 0.28);
+  transition:
+    transform 200ms ease,
+    box-shadow 200ms ease,
+    filter 200ms ease;
+}
+
+/* 扫光高光 */
+.button-primary::after {
+  position: absolute;
+  inset: -40% auto -40% -70%;
+  width: 46%;
+  background: linear-gradient(
+    100deg,
+    transparent,
+    rgba(255, 255, 255, 0.65),
+    transparent
+  );
+  transform: skewX(-18deg);
+  content: "";
+  transition: left 520ms ease;
+  pointer-events: none;
+}
+
+/* 悬停态合并自原先两条重复规则（缺陷修复：后者覆盖前者的背景/文字色） */
+.button-primary:hover {
+  transform: translateY(-2px) scale(1.04);
+  filter: saturate(1.15) brightness(1.04);
+  color: #4E3D47;
+  background: #F2A0B0;
+  box-shadow:
+    0 20px 48px rgba(233, 137, 151, 0.6),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6),
+    inset 0 -8px 18px rgba(178, 96, 112, 0.28);
+}
+
+.button-primary:hover::after {
+  left: 130%;
+}
+
+.button-primary:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.button-ghost {
+  border-color: rgba(255, 255, 255, 0.42);
+  background: rgba(255, 255, 255, 0.09);
+  color: inherit;
+}
+
+.button-ghost:hover {
+  border-color: rgba(138, 174, 111, 0.75);
+  color: inherit;
+}
+
+/* 区块容器：各区块模块只负责自己的变体 */
+.section {
+  width: min(1180px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 78px 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition: none !important;
+  }
+}
+
+@media (max-width: 700px) {
+  body,
+  .page-shell {
+    background-size: 34px 34px, 34px 34px, auto;
+  }
+}
