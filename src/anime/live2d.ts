@@ -1,5 +1,5 @@
 /**
- * Live2D 英雄区角色层：PixiJS + pixi-live2d-display(cubism4) 渲染官方示例模型。
+ * Live2D 英雄区角色层：PixiJS + pixi-live2d-display(cubism4) 渲染 yachiyo 模型。
  *
  * 设计要点（贴合 AGENTS.md）：
  * - 运行时按需动态加载 pixi.js / pixi-live2d-display，保持主包精简
@@ -12,7 +12,47 @@ import type { Live2DModel as Live2DModelType } from "pixi-live2d-display/cubism4
 
 import cubismCoreUrl from "live2dcubismcore/live2dcubismcore.min.js?url";
 
+/** 优先使用本地下载的 Cubism 5 Core；不存在时回退到 node_modules 里的旧 Core */
+const LOCAL_CUBISM_CORE_URL = "./assets/live2d/cubismcore/live2dcubismcore.min.js";
+
 let coreReady: Promise<void> | undefined;
+
+function ensureCubismCore(): Promise<void> {
+  if ((window as unknown as { Live2DCubismCore?: unknown }).Live2DCubismCore) {
+    return Promise.resolve();
+  }
+  coreReady ??= new Promise<void>((resolve, reject) => {
+    const urls = [LOCAL_CUBISM_CORE_URL, cubismCoreUrl];
+    let index = 0;
+
+    const tryLoad = (): void => {
+      if (index >= urls.length) {
+        reject(new Error("Cubism Core 加载失败（本地 Core 与 live2dcubismcore 均不可用）"));
+        return;
+      }
+      const script = document.createElement("script");
+      script.src = urls[index++]!;
+      script.async = true;
+      script.onload = () => {
+        if ((window as unknown as { Live2DCubismCore?: unknown }).Live2DCubismCore) {
+          resolve();
+          return;
+        }
+        script.remove();
+        tryLoad();
+      };
+      script.onerror = () => {
+        script.remove();
+        tryLoad();
+      };
+      document.head.appendChild(script);
+    };
+
+    tryLoad();
+  });
+  return coreReady;
+}
+/*
 
 function ensureCubismCore(): Promise<void> {
   if ((window as unknown as { Live2DCubismCore?: unknown }).Live2DCubismCore) {
@@ -32,6 +72,7 @@ function ensureCubismCore(): Promise<void> {
   });
   return coreReady;
 }
+*/
 
 export interface Live2DMountOptions {
   /** 承载 canvas 的容器元素 */
@@ -325,7 +366,7 @@ export async function mountLive2D(opts: Live2DMountOptions): Promise<Live2DHandl
       if (active.action === "hop" || active.action === "pop") pathHop = 36;
       if (active.action !== "none") {
         try {
-          model.motion("TapBody", 0);
+          model.motion("Greet", 0);
         } catch {
           /* 无对应动作组时忽略 */
         }
@@ -410,8 +451,16 @@ export async function mountLive2D(opts: Live2DMountOptions): Promise<Live2DHandl
     if (target && target.closest("a, button")) return;
     const rect = container.getBoundingClientRect();
     if (!rect.width || !rect.height) return;
-    if (model.hitTest(event.clientX - rect.left, event.clientY - rect.top).length > 0) {
-      void model.motion("TapBody");
+    // 该模型未声明 HitAreas 时，退化为按角色实际包围盒判定点击，保证点击动作可用
+    const b = charRect();
+    const withinChar = b
+      ? event.clientX >= b.left &&
+        event.clientX <= b.right &&
+        event.clientY >= b.top &&
+        event.clientY <= b.bottom
+      : false;
+    if (model.hitTest(event.clientX - rect.left, event.clientY - rect.top).length > 0 || withinChar) {
+      try { void model.motion("Greet"); } catch { /* 无 Greet 动作组时忽略 */ }
     }
   }
 
@@ -595,6 +644,12 @@ export async function mountLive2D(opts: Live2DMountOptions): Promise<Live2DHandl
     onReady?.();
   } catch (err) {
     console.error("[HeroLive2D] 模型加载失败：", err);
+      try {
+        app.destroy(true, { children: true, texture: true, baseTexture: true });
+      } catch {
+        /* noop */
+      }
+      throw err;
   }
 
   function createHandle(): Live2DHandle {
