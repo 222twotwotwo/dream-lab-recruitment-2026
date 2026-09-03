@@ -43,7 +43,7 @@ import { applyAssets } from "../data/content";
         <figcaption>
           <strong>扫码加入招新咨询群</strong>
           <span>26广油逐梦创新实验室招新群</span>
-          <small>二维码 7 天内有效，9 月 4 日前可扫码加入。</small>
+          <small>二维码 7 天内有效，9 月 10 日前可扫码加入。</small>
         </figcaption>
       </figure>
       <div :class="$style['actions']">
