@@ -79,16 +79,8 @@
   line-height: 1.2;
 }
 
-.qrCard span,
-.qrCard small {
+.qrCard span {
   color: #EFE0CE;
-}
-
-.qrCard small {
-  color: #C6D9AC;
-  font-family: var(--mono);
-  font-size: 12px;
-  font-weight: 800;
 }
 
 .actions {
