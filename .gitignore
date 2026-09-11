@@ -28,3 +28,6 @@ Thumbs.db
 
 # TS 增量构建缓存
 *.tsbuildinfo
+
+# 本地重复资源：test/assets/ 已跟踪同内容副本（逐字节相同），不入库
+test/models/
