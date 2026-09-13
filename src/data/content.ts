@@ -336,7 +336,7 @@ export const applyAssets = {
   },
   qr: {
     src: "./assets/recruitment-qr.png",
-    alt: "26广油逐梦创新实验室招新群二维码",
+    alt: "CS-TriadLect *9.13* 15:00 招新咨询群二维码",
     width: 1031,
     height: 1478,
   },

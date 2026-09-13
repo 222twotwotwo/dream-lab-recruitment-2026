@@ -42,7 +42,7 @@ import { applyAssets } from "../data/content";
         />
         <figcaption>
           <strong>扫码加入招新咨询群</strong>
-          <span>26广油逐梦创新实验室招新群</span>
+          <span>CS-TriadLect *9.13* 15:00</span>
         </figcaption>
       </figure>
       <div :class="$style['actions']">
