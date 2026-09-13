@@ -335,7 +335,7 @@ export const applyAssets = {
     alt: "Alice",
   },
   qr: {
-    src: "./assets/recruitment-qr.png",
+    src: "./assets/recruitment-qr-20260913.png",
     alt: "CS-TriadLect *9.13* 15:00 招新咨询群二维码",
     width: 1031,
     height: 1478,
