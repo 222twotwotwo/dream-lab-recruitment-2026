@@ -21,6 +21,7 @@ export type TrackKey =
   | "backend"
   | "client"
   | "media"
+  | "hardware"
   | "contest"
   | "agent";
 
@@ -151,6 +152,43 @@ export const tracks: Record<TrackKey, Track> = {
       },
     ],
   },
+  hardware: {
+    title: "硬件组 - 嵌入式",
+    tag: "Linux / STM32 / C / PCB",
+    logos: [
+      { icon: "./assets/logos/linux.svg", label: "Linux" },
+      { icon: "./assets/logos/cplusplus.svg", label: "C / C++" },
+      { icon: "./assets/logos/stm32.svg", label: "STM32" },
+    ],
+    intro:
+      "适合热爱硬件、喜欢动手、想搞清楚代码如何跑在真实硬件上的同学。主线是 Linux 嵌入式开发：从 C 语言与单片机打底，一路走到开发板上跑 Linux、写驱动、做完整智能硬件项目。",
+    details: [
+      {
+        title: "招募面向",
+        items: [
+          "2026 级全体新生，不限基础、不限专业",
+          "热爱硬件、喜欢动手实践，拒绝躺平",
+          "不看基础、只看态度与执行力，能跟着路线坚持完成三轮考核",
+        ],
+      },
+      {
+        title: "三轮学习 & 考核路线",
+        items: [
+          "第一轮：C 语言基础通关——语法、指针、数组、结构体（推荐翁恺 / 黑马 B 站课程）",
+          "第二轮：单片机入门——江协科技 51 / STM32 零基础教程，独立完成点灯、按键、串口通信实验",
+          "第三轮：Linux 嵌入式进阶（重点）——交叉编译、系统移植、板卡bring-up与驱动开发，在真实开发板上跑起 Linux",
+        ],
+      },
+      {
+        title: "可获得资源",
+        items: [
+          "全套免费公开学习资料、源码、课件与开发板支持",
+          "电路基础、PCB 画板、软硬件联调与智能硬件项目落地训练",
+          "电赛、大创、科创项目组队机会，最终独立完成个人首个嵌入式项目",
+        ],
+      },
+    ],
+  },
   contest: {
     title: "竞赛组",
     tag: "Algorithm / Modeling / Kaggle",
@@ -218,12 +256,13 @@ export const tracks: Record<TrackKey, Track> = {
   },
 };
 
-/** 方向页横向滚动卡片顺序（开发组细分 + 竞赛 + Agent） */
+/** 方向页横向滚动卡片顺序（开发组细分 + 硬件 + 竞赛 + Agent） */
 export const trackOrder: TrackKey[] = [
   "frontend",
   "backend",
   "client",
   "media",
+  "hardware",
   "contest",
   "agent",
 ];
@@ -234,6 +273,7 @@ export const trackDotLabels: Record<TrackKey, string> = {
   backend: "后端",
   client: "客户端",
   media: "数媒",
+  hardware: "硬件",
   contest: "竞赛",
   agent: "Agent",
 };

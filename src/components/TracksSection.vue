@@ -29,6 +29,7 @@ const trackAccent: Record<TrackKey, string> = {
   backend: "var(--gold)",
   client: "var(--violet)",
   media: "var(--orange)",
+  hardware: "var(--copper)",
   contest: "var(--teal-dark)",
   agent: "var(--orange)",
 };

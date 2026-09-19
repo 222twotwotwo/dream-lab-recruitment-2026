@@ -17,6 +17,8 @@
   --orange: #E9899B;
   --violet: #A98BD6;
   --gold: #E4C05C;
+  /* 焦糖铜：硬件组（嵌入式）方向强调色，呼应 PCB 铜面 */
+  --copper: #C4885C;
   --shadow: 0 20px 56px rgba(78, 61, 71, 0.14);
   --display: "Bahnschrift", "Microsoft YaHei UI", "Microsoft YaHei", "Segoe UI", sans-serif;
   --body: "Segoe UI", "Microsoft YaHei", system-ui, sans-serif;

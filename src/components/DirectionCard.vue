@@ -76,6 +76,18 @@ defineProps<{
             <span :class="$style['mediaLine']" data-motion="grow"></span>
           </template>
 
+          <template v-else-if="track.key === 'hardware'">
+            <div :class="$style['pcb']" data-motion="float">
+              <i :class="$style['chip']"></i>
+              <i :class="[$style['pcbTrace'], $style['traceA']]"></i>
+              <i :class="[$style['pcbTrace'], $style['traceB']]"></i>
+              <span :class="$style['pcbPad']"></span>
+              <span :class="$style['pcbPad']"></span>
+            </div>
+            <span :class="$style['hwLed']" data-motion="pulse"></span>
+            <span :class="$style['hwLine']" data-motion="grow"></span>
+          </template>
+
           <template v-else-if="track.key === 'contest'">
             <span :class="$style['targetRing']" data-motion="pulse"></span>
             <span :class="$style['targetRingSmall']" data-motion="pulse"></span>
