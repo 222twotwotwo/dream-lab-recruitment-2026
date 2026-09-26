@@ -1,0 +1,10 @@
+node_modules/
+dist/
+*.log
+
+# 本地临时日志/脚本（沙箱限制无法删除，忽略不入库）
+/*.txt
+/compress_*.py
+/public/images/bg-check.txt
+/public/images/bg1/
+/public/images/bg2/

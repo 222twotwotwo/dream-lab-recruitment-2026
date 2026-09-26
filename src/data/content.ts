@@ -375,10 +375,10 @@ export const applyAssets = {
     alt: "Alice",
   },
   qr: {
-    src: "./assets/recruitment-qr-20260919.png",
-    alt: "CS-TriadLect *9.19* 招新咨询群二维码",
+    src: "./assets/recruitment-qr-20260925.png",
+    alt: "CS-TriadLect *9.25* 招新咨询群二维码",
     width: 1031,
-    height: 1440,
+    height: 1478,
   },
 } as const;
 
